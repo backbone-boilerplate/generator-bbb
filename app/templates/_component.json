@@ -1,0 +1,6 @@
+{
+  "dependencies": {
+    "html5-boilerplate": "~4.1.0",
+    "almond": "~0.2.5"
+  }
+}

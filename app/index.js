@@ -3,6 +3,17 @@ var util = require("util");
 var path = require("path");
 var yeoman = require("yeoman-generator");
 
+// TODO: Get this native in Yeoman
+var spawn = require('child_process').spawn;
+var win32 = process.platform === 'win32';
+
+function spawnCommand(command, args, cb) {
+  var winCommand = win32 ? 'cmd' : command;
+  var winArgs = win32 ? ['/c ' + command + ' ' + args.join(' ')] : args;
+
+  return spawn(winCommand, winArgs, { stdio: 'inherit' });
+}
+
 
 var bbbGenerator = module.exports = function bbbGenerator(args, options, config) {
   yeoman.generators.Base.apply(this, arguments);
@@ -59,15 +70,23 @@ bbbGenerator.prototype.askFor = function askFor() {
  );
 
   var prompts = [{
-    name: "projectName",
+    name: "appname",
     message: "Your project name:",
-    default: "name-me-later"
+    default: this.appname // Default to current folder name
   }, {
     name: "testFramework",
-    message: "Which test framwork do you want to use?" +
+    message: "Which test framework do you want to use?" +
       "\n 1) QUnit" +
       "\n 2) Mocha" +
       "\n 3) Jasmine" +
+      "\n Default: ",
+    default: "1"
+  }, {
+    name: "packageManager",
+    message: "Which package manager do you want to use?" +
+      "\n 1) Jam" +
+      "\n 2) Bower" +
+      "\n 3) None" +
       "\n Default: ",
     default: "1"
   }];
@@ -78,16 +97,30 @@ bbbGenerator.prototype.askFor = function askFor() {
     3: "jasmine"
   };
 
+  var packageManagers = {
+    1: "jam",
+    2: "bower",
+    3: "none"
+  };
+
   this.prompt(prompts, function (err, props) {
     if (err) {
       return this.emit("error", err);
     }
 
-    this.projectName = props.projectName;
+    this.appname = props.appname;
     this.testFramework = testFrameworks[props.testFramework];
+    this.packageManager = packageManagers[props.packageManager];
 
     done();
   }.bind(this));
+
+  // After scaffholing hook
+  this.on("end", function () {
+    if (this.packageManager === "jam") {
+      spawnCommand("jam", ["upgrade"]);
+    }
+  });
 };
 
 bbbGenerator.prototype.app = function app() {
@@ -98,12 +131,17 @@ bbbGenerator.prototype.app = function app() {
   this.mkdir("app/styles");
   this.mkdir("app/img");
 
-  this.copy("_package.json", "package.json");
-  this.copy("_component.json", "component.json");
-  this.copy("_bowerrc", ".bowerrc");
   this.copy("index.html", "index.html");
   this.copy("favicon.ico", "favicon.ico");
   this.copy("Gruntfile.js", "Gruntfile.js");
+};
+
+bbbGenerator.prototype.genPackageManager = function genPackageManager() {
+  // Bower
+  if (this.packageManager === "bower") {
+    this.copy("_component.json", "component.json");
+    this.copy("_bowerrc", ".bowerrc");
+  }
 };
 
 bbbGenerator.prototype.testScaffholding = function testScaffholding() {
@@ -112,7 +150,21 @@ bbbGenerator.prototype.testScaffholding = function testScaffholding() {
 
 bbbGenerator.prototype.saveConfig = function saveConfig() {
   this.write(".bbbrc", JSON.stringify({
-    projectName   : this.projectName,
+    appname       : this.appname,
     testFramework : this.testFramework
   }, null, "  "));
+};
+
+bbbGenerator.prototype.genPackageJSON = function genPackageJSON() {
+  var packageJSON = JSON.parse(this.read("_package.json"));
+
+  // Delete Jam configuration if not used
+  if (this.packageManager !== "jam") {
+    delete packageJSON.jam;
+  }
+
+  // Set package settings
+  packageJSON.name = this._.slugify(this.appname);
+
+  this.write("package.json", JSON.stringify(packageJSON, null, "  "));
 };
