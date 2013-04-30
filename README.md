@@ -1,4 +1,5 @@
-# Generator
+# BBB Generator (Scaffholding)
+## Work in progress, final repo won't be here
 [![Build Status](https://secure.travis-ci.org/SBoudrias/generator.png?branch=master)](https://travis-ci.org/SBoudrias/generator)
 
 A generator for Yeoman.
