@@ -2,6 +2,8 @@
 var util = require("util");
 var path = require("path");
 var yeoman = require("yeoman-generator");
+var falafel = require("falafel");
+var _ = require("lodash");
 
 // TODO: Get this native in Yeoman
 var spawn = require('child_process').spawn;
@@ -133,7 +135,6 @@ bbbGenerator.prototype.app = function app() {
 
   this.copy("index.html", "index.html");
   this.copy("favicon.ico", "favicon.ico");
-  this.copy("Gruntfile.js", "Gruntfile.js");
 };
 
 bbbGenerator.prototype.genPackageManager = function genPackageManager() {
@@ -144,8 +145,41 @@ bbbGenerator.prototype.genPackageManager = function genPackageManager() {
   }
 };
 
+bbbGenerator.prototype.genGruntfile = function genGruntfile() {
+  var self = this;
+
+  // function parseKarmaConfig( conf ) {
+  //   var source = eval(conf.source().replace(/^karma\:\s/i, ""));
+
+  //   if( self.testFramework !== "mocha" ) {
+  //     delete source.mocha;
+  //   }
+
+  //   conf.update("karma: " + JSON.stringify(source, null, "  "));
+  // }
+
+  // var output = falafel(this.read("Gruntfile.js"), function(node) {
+  //   if (node.type === "CallExpression" &&
+  //       node.callee.object.name === "grunt" &&
+  //       node.callee.property.name === "initConfig") {
+  //     var gruntConfig = node.arguments[0];
+
+  //     var karmaConf = _.filter(gruntConfig.properties, function(n) {
+  //       return n.key.name === "karma";
+  //     })[0];
+
+  //     parseKarmaConfig(karmaConf);
+  //   }
+  // });
+
+  // this.write("Gruntfile.js", output);
+
+  this.copy("Gruntfile.js", "Gruntfile.js");
+
+};
+
 bbbGenerator.prototype.testScaffholding = function testScaffholding() {
-  this.directory("test/" + this.testFramework, "test", true);
+  this.directory("test/" + this.testFramework, "test/" + this.testFramework, true);
 };
 
 bbbGenerator.prototype.saveConfig = function saveConfig() {
