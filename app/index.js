@@ -3,7 +3,10 @@ var util = require("util");
 var path = require("path");
 var yeoman = require("yeoman-generator");
 var falafel = require("falafel");
+var esprima = require("esprima");
+var escodegen = require("escodegen");
 var _ = require("lodash");
+var grunt = require("grunt");
 
 // TODO: Get this native in Yeoman
 var spawn = require('child_process').spawn;
@@ -16,6 +19,18 @@ function spawnCommand(command, args, cb) {
   return spawn(winCommand, winArgs, { stdio: 'inherit' });
 }
 
+function normalizeFile(src) {
+  var ast = esprima.parse(src);
+  var  = escodegen.generate(ast, {
+    format: { indent : this.indent }
+  });
+
+  return code;
+}
+function normalizeJSON(src) {
+  var obj = JSON.parse(this.read(src));
+  return JSON.stringify(obj, null, this.indent);
+}
 
 var bbbGenerator = module.exports = function bbbGenerator(args, options, config) {
   yeoman.generators.Base.apply(this, arguments);
@@ -91,6 +106,14 @@ bbbGenerator.prototype.askFor = function askFor() {
       "\n 3) None" +
       "\n Default: ",
     default: "1"
+  }, {
+    name: "indent",
+    message: "What about indentation?" +
+      "\n 1) Spaces (2)" +
+      "\n 2) Spaces (4)" +
+      "\n 3) Tabs" +
+      "\n Default: ",
+    default: "1"
   }];
 
   var testFrameworks = {
@@ -105,6 +128,12 @@ bbbGenerator.prototype.askFor = function askFor() {
     3: "none"
   };
 
+  var indents = {
+    1: "  ",
+    3: "    ",
+    2: "\t"
+  };
+
   this.prompt(prompts, function (err, props) {
     if (err) {
       return this.emit("error", err);
@@ -113,6 +142,8 @@ bbbGenerator.prototype.askFor = function askFor() {
     this.appname = props.appname;
     this.testFramework = testFrameworks[props.testFramework];
     this.packageManager = packageManagers[props.packageManager];
+
+    this.indent = indents[props.indent];
 
     done();
   }.bind(this));
@@ -126,12 +157,19 @@ bbbGenerator.prototype.askFor = function askFor() {
 };
 
 bbbGenerator.prototype.app = function app() {
-  this.directory("app", "app", true);
+  // this.directory("app", "app", true);
   this.mkdir("vendor");
   this.mkdir("app/modules");
   this.mkdir("app/templates");
   this.mkdir("app/styles");
   this.mkdir("app/img");
+
+  var files = grunt.file.expand( __dirname + "/templates/app/**/*.js");
+  _.each( files, function( path ) {
+    grunt.file.copy( path, process.cwd(), {
+      process: normalizeFile
+    });
+  });
 
   this.copy("index.html", "index.html");
   this.copy("favicon.ico", "favicon.ico");
@@ -140,8 +178,8 @@ bbbGenerator.prototype.app = function app() {
 bbbGenerator.prototype.genPackageManager = function genPackageManager() {
   // Bower
   if (this.packageManager === "bower") {
-    this.copy("_component.json", "component.json");
-    this.copy("_bowerrc", ".bowerrc");
+    this.write("component.json", normalizeJSON.call(this, "_component.json"));
+    this.write(".bowerrc", normalizeJSON.call(this, "_bowerrc"));
   }
 };
 
@@ -185,8 +223,9 @@ bbbGenerator.prototype.testScaffholding = function testScaffholding() {
 bbbGenerator.prototype.saveConfig = function saveConfig() {
   this.write(".bbbrc", JSON.stringify({
     appname       : this.appname,
-    testFramework : this.testFramework
-  }, null, "  "));
+    testFramework : this.testFramework,
+    indent        : this.indent
+  }, null, this.indent));
 };
 
 bbbGenerator.prototype.genPackageJSON = function genPackageJSON() {
@@ -200,5 +239,5 @@ bbbGenerator.prototype.genPackageJSON = function genPackageJSON() {
   // Set package settings
   packageJSON.name = this._.slugify(this.appname);
 
-  this.write("package.json", JSON.stringify(packageJSON, null, "  "));
+  this.write("package.json", JSON.stringify(packageJSON, null, this.indent));
 };
