@@ -1,15 +1,17 @@
 {
   "name": "generator-bbb",
   "version": "0.0.0",
-  "description": "A generator for Yeoman",
+  "description": "The Backbone Boilerplate generator for yeoman",
   "keywords": [
-    "yeoman-generator"
+    "yeoman-generator",
+    "backbone-boilerplate",
+    "backbone"
   ],
   "homepage": "https://github.com/SBoudrias/generator-bbb",
   "bugs": "https://github.com/SBoudrias/generator-bbb/issues",
   "author": {
-    "name": "SBoudrias",
-    "email": "user@example.net",
+    "name": "Simon Boudrias",
+    "email": "admin@simonboudrias.com",
     "url": "https://github.com/SBoudrias"
   },
   "main": "app/index.js",
@@ -22,12 +24,8 @@
   },
   "dependencies": {
     "yeoman-generator": "~0.10.2",
-    "rocambole": "~0.2.3",
-    "escodegen": "0.0.22",
-    "falafel": "~0.2.0",
+    "falafel": "0.2.0",
     "lodash": "~1.2.1",
-    "esprima": "~1.0.2",
-    "grunt": "~0.4.1"
   },
   "devDependencies": {
     "mocha": "~1.9.0"

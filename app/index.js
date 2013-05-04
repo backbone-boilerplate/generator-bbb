@@ -1,14 +1,18 @@
+/**
+ * BBB yeoman generator
+ *
+ *
+ *
+ */
+
 "use strict";
 var util = require("util");
 var path = require("path");
 var yeoman = require("yeoman-generator");
 var falafel = require("falafel");
-var esprima = require("esprima");
-var escodegen = require("escodegen");
 var _ = require("lodash");
-var grunt = require("grunt");
 
-// TODO: Get this native in Yeoman
+// Use native in Yeoman once new version hit NPM (https://github.com/yeoman/generator/pull/223)
 var spawn = require('child_process').spawn;
 var win32 = process.platform === 'win32';
 
@@ -19,31 +23,34 @@ function spawnCommand(command, args, cb) {
   return spawn(winCommand, winArgs, { stdio: 'inherit' });
 }
 
-function normalizeFile(src) {
-  var ast = esprima.parse(src);
-  var  = escodegen.generate(ast, {
-    format: { indent : this.indent }
-  });
-
-  return code;
-}
-function normalizeJSON(src) {
-  var obj = JSON.parse(this.read(src));
-  return JSON.stringify(obj, null, this.indent);
-}
-
+/**
+ * BBB Generator constructor
+ * Extend Yeoman base generator
+ * Launch packages manager once the installation ends
+ */
 var bbbGenerator = module.exports = function bbbGenerator(args, options, config) {
   yeoman.generators.Base.apply(this, arguments);
 
   this.on("end", function () {
-    this.installDependencies({ skipInstall: options["skip-install"] });
+    if( options["skip-install"] ) {
+      return;
+    }
+
+    if (this.packageManager === "jam") {
+      spawnCommand("jam", ["upgrade"]);
+    } else if (this.packageManager === "bower") {
+      this.bowerInstall ();
+    }
+
+    this.npmInstall();
   });
-
-  this.pkg = JSON.parse(this.readFileAsString(path.join(__dirname, "../package.json")));
 };
-
 util.inherits(bbbGenerator, yeoman.generators.NamedBase);
 
+/**
+ * Command prompt questions
+ * Extend defaults and options based on user answers
+ */
 bbbGenerator.prototype.askFor = function askFor() {
   var done = this.async();
 
@@ -147,87 +154,85 @@ bbbGenerator.prototype.askFor = function askFor() {
 
     done();
   }.bind(this));
-
-  // After scaffholing hook
-  this.on("end", function () {
-    if (this.packageManager === "jam") {
-      spawnCommand("jam", ["upgrade"]);
-    }
-  });
 };
 
+/**
+ * Copy boilerplate main code
+ * all `app/` folder, index.html and favicon
+ */
 bbbGenerator.prototype.app = function app() {
-  // this.directory("app", "app", true);
+  this.directory("app", "app", true);
   this.mkdir("vendor");
   this.mkdir("app/modules");
   this.mkdir("app/templates");
   this.mkdir("app/styles");
   this.mkdir("app/img");
 
-  var files = grunt.file.expand( __dirname + "/templates/app/**/*.js");
-  _.each( files, function( path ) {
-    grunt.file.copy( path, process.cwd(), {
-      process: normalizeFile
-    });
-  });
-
   this.copy("index.html", "index.html");
   this.copy("favicon.ico", "favicon.ico");
 };
 
+/**
+ * Generate the Package Manager configuration
+ * Note: Jam configuration being managed inside `package.json`, it's config is managed
+ *       in another function
+ */
 bbbGenerator.prototype.genPackageManager = function genPackageManager() {
   // Bower
   if (this.packageManager === "bower") {
-    this.write("component.json", normalizeJSON.call(this, "_component.json"));
-    this.write(".bowerrc", normalizeJSON.call(this, "_bowerrc"));
+    this.write("component.json", "_component.json");
+    this.write(".bowerrc", "_bowerrc");
   }
 };
 
+/**
+ * Generate the Gruntfile
+ * Note: Use `falafel` to recurse over the Gruntfile AST and set only relevant configs
+ */
 bbbGenerator.prototype.genGruntfile = function genGruntfile() {
   var self = this;
 
-  // function parseKarmaConfig( conf ) {
-  //   var source = eval(conf.source().replace(/^karma\:\s/i, ""));
+  var output = falafel(this.read("Gruntfile.js"), function(node) {
+    if (node.type === "CallExpression" &&
+        node.callee.object.name === "grunt" &&
+        node.callee.property.name === "initConfig") {
+      var gruntConfig = node.arguments[0];
 
-  //   if( self.testFramework !== "mocha" ) {
-  //     delete source.mocha;
-  //   }
+      var karmaConf = _.filter(gruntConfig.properties, function(n) {
+        return n.key.name === "karma";
+      })[0].value;
 
-  //   conf.update("karma: " + JSON.stringify(source, null, "  "));
-  // }
+      // Loop through karma configuration options and delete unused test framework
+      _.each(karmaConf.properties, function(node) {
+        if (node.key.name !== self.testFramework && node.key.name !== "options") {
+          node.update("");
+        }
+      });
 
-  // var output = falafel(this.read("Gruntfile.js"), function(node) {
-  //   if (node.type === "CallExpression" &&
-  //       node.callee.object.name === "grunt" &&
-  //       node.callee.property.name === "initConfig") {
-  //     var gruntConfig = node.arguments[0];
+      // Delete remaining commas and extra whitespace
+      var source = karmaConf.source()
+        .replace(/(?!,)([\s\r\n]*,)/g, "") // two comma following each other `,,`
+        .replace(/(,(?=[\s\r\n]*})+)/g, "") // ending comma e.g. `,}`
+        .replace(/(?![\r\n]+)(\s*[\r\n]+)/g, ""); // two line break following
+      karmaConf.update(source);
+    }
+  });
 
-  //     var karmaConf = _.filter(gruntConfig.properties, function(n) {
-  //       return n.key.name === "karma";
-  //     })[0];
-
-  //     parseKarmaConfig(karmaConf);
-  //   }
-  // });
-
-  // this.write("Gruntfile.js", output);
-
-  this.copy("Gruntfile.js", "Gruntfile.js");
+  this.write("Gruntfile.js", output);
 
 };
 
+/**
+ * Scaffhold the test directory
+ */
 bbbGenerator.prototype.testScaffholding = function testScaffholding() {
   this.directory("test/" + this.testFramework, "test/" + this.testFramework, true);
 };
 
-bbbGenerator.prototype.saveConfig = function saveConfig() {
-  this.write(".bbbrc", JSON.stringify({
-    appname       : this.appname,
-    testFramework : this.testFramework,
-    indent        : this.indent
-  }, null, this.indent));
-};
-
+/**
+ * Generate the `package.json` file
+ * Note: Jamjs configuration is also generated here
+ */
 bbbGenerator.prototype.genPackageJSON = function genPackageJSON() {
   var packageJSON = JSON.parse(this.read("_package.json"));
 
@@ -240,4 +245,15 @@ bbbGenerator.prototype.genPackageJSON = function genPackageJSON() {
   packageJSON.name = this._.slugify(this.appname);
 
   this.write("package.json", JSON.stringify(packageJSON, null, this.indent));
+};
+
+/**
+ * Save the current configuration inside `.bbbrc` files so sub-generator can use it too
+ */
+bbbGenerator.prototype.saveConfig = function saveConfig() {
+  this.write(".bbbrc", JSON.stringify({
+    appname       : this.appname,
+    testFramework : this.testFramework,
+    indent        : this.indent
+  }, null, this.indent));
 };
