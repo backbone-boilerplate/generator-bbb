@@ -27,14 +27,22 @@ Run `yo bbb:module` to create a module.
 
 In order to work with the developpement version, you'll need to use [`npm-link` functionnality](https://npmjs.org/doc/link.html).
 
-```cmd
-$ cd install/dir
-$ git clone repo/generator-bbb.git .
-$ npm install # Get the dependencies manually
-$ npm link # Here you create a global link to `generator-bbb` which will be use by NPM
-$ cd dir/to/use/as/target
-$ npm install generator-bbb # Yeoman search local generator
-$ yo bbb # or any BBB generator options
+``` bash
+# First, get the project from Github
+cd install/dir
+git clone repo/generator-bbb.git .
+
+# Then install the dependencies manually
+npm install
+
+# Here you create a global link to `generator-bbb` which will be use by NPM
+# This will allow you to use the module from NPM
+npm link
+
+# Then use it!
+cd dir/to/use/as/target
+npm install generator-bbb
+yo bbb # or any BBB generator options
 ```
 
 ## License
