@@ -9,11 +9,11 @@ The Backbone-Boilerplate generator working on top of Yeoman.
     `npm install -g yo`
 - Install the generator: `npm install generator-bbb` (This generator is not yet on NPM)
 
-### From Scratch
+### Starting from Scratch?
 
 Run `yo bbb` to start the default scaffholding
 
-### Include in existing project
+### Include in an existing project
 
 Run `yo bbb:init` to initialize the generator configuration. This will allow you to use the generator on an existing project.
 
