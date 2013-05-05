@@ -39,7 +39,7 @@ npm install
 # This will allow you to use the module from NPM
 npm link
 
-# Then use it!
+# Then... use it!
 cd dir/to/use/as/target
 npm install generator-bbb
 yo bbb # or any BBB generator options

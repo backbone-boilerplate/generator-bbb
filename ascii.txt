@@ -1,0 +1,9 @@
+   .-~0~-.
+  /   ___ \
+  |  ( _ )|       ~~ Backbone-Boilerplate ~~
+.-' (C) (C)`-  Welcome to the project generator
+  |   .---.           Have a good time!
+  |  / .-. \
+  |  \ `-' /
+  |   `---'
+__|_______|___

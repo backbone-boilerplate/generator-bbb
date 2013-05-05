@@ -54,44 +54,17 @@ util.inherits(bbbGenerator, yeoman.generators.NamedBase);
 bbbGenerator.prototype.askFor = function askFor() {
   var done = this.async();
 
-  console.log("" +
-"\n                                ;HH;                                                                        " +
-"\n                             ,;s@@@@r:.                                                                     " +
-"\n                       ,2@@@@@@@@@@@@@@@@@A;                                                                " +
-"\n                    ,B@@@@@@@@@@@@@@@@@@@@@@@#:                                                             " +
-"\n                  :@@@@@@@@@@@@@@@@@@@@@@@@@@@@@:                                                           " +
-"\n                 M@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@B                                                          " +
-"\n                @@@@@@@@@@@@@@@@@BAGGhG&AB@@@@@@@@@                                                         " +
-"\n               @@@@@@@@@@@@@@@MG99hGGGGGh93&#@@@@@@@                                                        " +
-"\n              X@@@@@@@@@@@@@@AXh&AAAAAAAA&G9XA@@@@@@@                                                       " +
-"\n              @@@@@@@@@@@@@@@Gh&AAAAAAAAAAAAA#@@@@@@@;                                                      " +
-"\n             r@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@                                                      " +
-"\n             X@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@#####@@@@hir;#@;                                               " +
-"\n         ,r23@@@@@@@@@@#BAA&&&G&&&GGGGhhhhG&G&&AAHB#@@@@@@@@@@X                                             " +
-"\n     i@@@@@@@@@@@@@@@@@@@@@@@@Mh&G&&&&&&&&@@@@@@@@@@@@@@@@@@@@@.                                            " +
-"\n    :@@@@@@@@@@@@@@@@@@@@@@@@@#hH@@BAAAAAA@@@@@@@@@@@@@@@@Hs,                                               " +
-"\n       ;Sh@@@@@@@@@@@@@@@@@@,  ::.s@@HHHAA@@@9.;2i;i@i  A#                                                  " +
-"\n           @s    #@@@@@@@@&  &@9,   @#HHA&@@, A@;    @rh@.                                                  " +
-"\n           H@s   #@@@@@@@@  @@2     ,@HHA&@A A@G     :@@@i                                                  " +
-"\n           @@@;  @@@@@@@@@  @@#     ,@HHA&@M :@@; ., .@@B                                                   " +
-"\n           ;@@@  @@@@@@@@@#  &@@@X  @@HHAA@@;  H@@#  @@@                                                    " +
-"\n            @@@  @@@@@@@@@@@,    .5@@HHHHH@@@#.  ..X@@@                                                     " +
-"\n            ;@@B #@@@@@@@@@@@@@@@@@#HB#@#M@@@@@@@S@@@@                                                      " +
-"\n             @@@ H@@@@@@@@@@@@@@@#AA##s      ;#@@ @@@;                                                      " +
-"\n:,.          .#@ &@@@@@@@@@@@@@M9H#@S           #@@:                                                        " +
-"\nSGBHAG35sr:.   @i@@@@@@@@@@@@@@@@@@;  #@@@@A     &@                                                         " +
-"\niSX9hG&AHHHAh2;#@@@@@@@@@@@@@@@@@@A :@@@@@@@@,    @r                                                        " +
-"\nisS55552222225si@@@@@@@@@@@@@@@@@@; @@@@@@@@@@    @A                                                        " +
-"\nisiiiiiiiSSSSis;#@@@@@@@@@@@@@@@@@G i@@@@@@@@s    @;                                                        " +
-"\nisiiiiiiiiiiiis;r@@@@@@@@@@@@@@@@@@  ;@@@@@@;    r@                                                         " +
-"\nisiiiiiiiiiiiisr;@@@@@@@@@@@@@@@@@@@.           S@hX&G32ir;:.                                               " +
-"\nisiiiiiiiiiiiiir;@@@@@@@@@@@@@@@@@@@@#.      .2@@ssX3G&AHHBBBHAGX5sr;,.                                     " +
-"\nisiiiiiiiiiiiiisr@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@#;iS5552222XX3hG&AHHBBHA&hXSs;:,.                           " +
-"\nisiiiiiiiiiiiiis;@@@@@@@@@@@@@@AhHM#@@@@@@@@@@@@#;siiiiiiiSSSSS555222XX3hGAAHHBBHAG35ir;,.                  " +
-"\ns;rrrrrrrrrrrrr;:@@@@@@@@@@@@@@A2XX39GAAHA@@@@@@B:;rrrrrrrrrrrrrrrrrrrrrsssssiiiS52X39hhGh9X2ir;:,.         " +
-"\nGGAAAAAAAAAAAAAG3@@@@@@@@@@@@@@#HBBBHG&A&GB#@@@@@9AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAHHHHBBMMM##@@@@@@@@@@@#B&X5r" +
-"\n@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@BBBBBBH@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@"
- );
+  console.log(
+    "\n    .-~0~-." +
+    "\n   /   ___ \\ " +
+    "\n   |  ( _ )|       ~~ Backbone-Boilerplate ~~" +
+    "\n .-' (C) (C)`-  Welcome to the project generator" +
+    "\n   |   .---.           Have a good time!" +
+    "\n   |  / .-. \\ " +
+    "\n   |  \\ `-' / " +
+    "\n   |   `---'" +
+    "\n __|_______|___ \n"
+  );
 
   var prompts = [{
     name: "appname",
@@ -251,7 +224,7 @@ bbbGenerator.prototype.genPackageJSON = function genPackageJSON() {
  * Save the current configuration inside `.bbbrc` files so sub-generator can use it too
  */
 bbbGenerator.prototype.saveConfig = function saveConfig() {
-  this.write(".bbbrc", JSON.stringify({
+  this.write(".bbb-rc.json", JSON.stringify({
     appname       : this.appname,
     testFramework : this.testFramework,
     indent        : this.indent
