@@ -47,11 +47,15 @@ Generator.prototype.askFor = function askFor() {
     "\n __|_______|___ \n"
   );
 
-  var prompts = [{
-    name: "appname",
+  var prompts = [];
+
+  !this.bbb.name && prompts.push({
+    name: "name",
     message: "Your project name:",
     default: this.appname // Default to current folder name
-  }, {
+  });
+
+  !this.bbb.testFramework && prompts.push({
     name: "testFramework",
     message: "Which test framework do you want to use?" +
       "\n 1) QUnit" +
@@ -59,7 +63,9 @@ Generator.prototype.askFor = function askFor() {
       "\n 3) Jasmine" +
       "\n Default: ",
     default: "1"
-  }, {
+  });
+
+  !this.bbb.packageManager && prompts.push({
     name: "packageManager",
     message: "Which package manager do you want to use?" +
       "\n 1) Jam" +
@@ -67,7 +73,9 @@ Generator.prototype.askFor = function askFor() {
       "\n 3) None" +
       "\n Default: ",
     default: "1"
-  }, {
+  });
+
+  !this.bbb.indent && prompts.push({
     name: "indent",
     message: "What about indentation?" +
       "\n 1) Spaces (2)" +
@@ -75,7 +83,7 @@ Generator.prototype.askFor = function askFor() {
       "\n 3) Tabs" +
       "\n Default: ",
     default: "1"
-  }];
+  });
 
   var testFrameworks = {
     1: "qunit",
@@ -100,10 +108,19 @@ Generator.prototype.askFor = function askFor() {
       return this.emit("error", err);
     }
 
-    this.pkg.name = props.appname;
-    this.bbb.testFramework = testFrameworks[props.testFramework];
-    this.bbb.packageManager = packageManagers[props.packageManager];
-    this.bbb.indent = indents[props.indent];
+    _.each(props, function(val, name) {
+      if (name === "testFramework") {
+        this.bbb.testFramework = testFrameworks[val];
+      } else if (name === "packageManager") {
+        this.bbb.packageManager = packageManagers[val];
+      } else if (name === "indent") {
+        this.bbb.indent = indents[val];
+      } else {
+        this.bbb[name] = val;
+      }
+    }, this);
+
+    this.pkg.name = this.bbb.name;
 
     done();
   }.bind(this));

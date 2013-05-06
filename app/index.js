@@ -66,12 +66,13 @@ util.inherits(Generator, InitGenerator);
 
 /**
  * Command prompt questions
- * Extend defaults and options based on user answers
  */
 
 Generator.prototype.askFor = function askFor() {
   InitGenerator.prototype.askFor.call(this);
 };
+
+Generator.prototype.saveConfig = InitGenerator.prototype.saveConfig;
 
 /**
  * Copy boilerplate main code
