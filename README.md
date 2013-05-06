@@ -13,6 +13,9 @@ The Backbone-Boilerplate generator working on top of Yeoman.
 
 Run `yo bbb` to start the default scaffholding
 
+You can also assign a `path` option if you don't want to initialize BBB in the current
+working directory; e.g. `yo bbb subfolder/myapp` (note: the path can also be absolute)
+
 ### Include in an existing project
 
 Run `yo bbb:init` to initialize the generator configuration. This will allow you to use the generator on an existing project.

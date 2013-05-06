@@ -68,6 +68,18 @@ function Generator(args, options, config) {
     return JSON.stringify(obj, null, self.bbb.indent);
   };
 
+  // Setup destination directory
+  if (_.isString(args[0])) {
+    if (grunt.file.isPathAbsolute(args[0])) {
+      grunt.file.mkdir(args[0]);
+      this.destinationRoot(args[0]);
+    } else {
+      this.dest.mkdir(args[0]);
+      this.destinationRoot(path.join(process.cwd(), args[0]));
+    }
+    this.appname = _.last(args[0].split(/[\/\\]/g));
+  }
+
   // Get existing configurations
   var packageJSON;
   try {
