@@ -8,6 +8,7 @@ var path = require("path");
 var yeoman = require("yeoman-generator");
 var falafel = require("falafel");
 var _ = require("lodash");
+var grunt = require("grunt");
 
 // Use native in Yeoman once new version hit NPM (https://github.com/yeoman/generator/pull/223)
 var spawn = require('child_process').spawn;
@@ -26,17 +27,56 @@ function spawnCommand(command, args, cb) {
  * Launch packages manager once the installation ends
  */
 var bbbGenerator = module.exports = function bbbGenerator(args, options, config) {
+  var self = this;
   yeoman.generators.Base.apply(this, arguments);
+
+  this.destinationRoot(process.cwd());
+
+  // Extend grunt.file to namespace with source and destination directory.
+  // Note: I don't like Yeoman file API, so here I use a wrapped Grunt instead.
+
+  this.src = {};
+  this.dest = {};
+
+  _.assign(this.src, grunt.file, function(thisSrc, gruntFunc) {
+    return function() {
+      var src = arguments[0];
+      var args = Array.prototype.slice.call(arguments, 1);
+
+      src = path.join(this.sourceRoot(), src);
+      args.unshift(src);
+
+      return gruntFunc.apply(grunt.file, args);
+    }.bind(this);
+  }, this);
+
+  _.assign(this.dest, grunt.file, function(thisSrc, gruntFunc) {
+    return function() {
+      var src = arguments[0];
+      var args = Array.prototype.slice.call(arguments, 1);
+
+      src = path.join(this.destinationRoot(), src);
+      args.unshift(src);
+
+      return gruntFunc.apply(grunt.file, args);
+    }.bind(this);
+  }, this);
+
+  // Attach helper functions
+  this.helper = {};
+
+  this.helper.normalizeJSON = function(obj) {
+    if (!_.isObject(obj)) { throw new Error("normalizeJSON take an object"); }
+    return JSON.stringify(obj, null, self.bbb.indent);
+  };
 
   // Get existing configurations
   var packageJSON;
-
   try {
-    packageJSON = this.read(path.join(process.cwd(), "package.json"));
+    packageJSON = this.dest.readJSON("package.json");
   } catch(e) { packageJSON = {}; }
 
-
-  this.pkg = _.defaults(packageJSON, JSON.parse(this.read("_package.json")));
+  this.pkg = _.extend(this.src.readJSON("_package.json"), packageJSON);
   this.bbb = {};
 
   // Launch packages manager once the installation ends
@@ -133,6 +173,8 @@ bbbGenerator.prototype.askFor = function askFor() {
     this.bbb.packageManager = packageManagers[props.packageManager];
     this.bbb.indent = indents[props.indent];
 
+    console.log( this.pkg );
+
     done();
   }.bind(this));
 };
@@ -159,8 +201,10 @@ bbbGenerator.prototype.app = function app() {
 bbbGenerator.prototype.genPackageManager = function genPackageManager() {
   // Bower
   if (this.bbb.packageManager === "bower") {
-    this.write("component.json", "_component.json");
-    this.write(".bowerrc", "_bowerrc");
+    var comp = this.src.readJSON("_component.json");
+    this.dest.write("component.json", this.helper.normalizeJSON(comp));
+    var bowerrc = this.src.readJSON("_bowerrc");
+    this.dest.write(".bowerrc", this.helper.normalizeJSON(bowerrc));
   }
 
   // Delete Jam configuration if not used
@@ -176,7 +220,7 @@ bbbGenerator.prototype.genPackageManager = function genPackageManager() {
 bbbGenerator.prototype.genGruntfile = function genGruntfile() {
   var self = this;
 
-  var output = falafel(this.read("Gruntfile.js"), function(node) {
+  var output = falafel(this.src.read("Gruntfile.js"), function(node) {
     if (node.type === "CallExpression" &&
         node.callee.object.name === "grunt" &&
         node.callee.property.name === "initConfig") {
@@ -202,7 +246,7 @@ bbbGenerator.prototype.genGruntfile = function genGruntfile() {
     }
   });
 
-  this.write("Gruntfile.js", output);
+  this.dest.write("Gruntfile.js", output);
 
 };
 
@@ -221,12 +265,12 @@ bbbGenerator.prototype.genPackageJSON = function genPackageJSON() {
   this.pkg.name = this._.slugify(this.pkg.name);
   this.pkg.version = "0.0.0";
 
-  this.write("package.json", JSON.stringify(this.pkg, null, this.bbb.indent));
+  this.dest.write("package.json", this.helper.normalizeJSON(this.pkg));
 };
 
 /**
  * Save the current configuration inside `.bbbrc` files so sub-generator can use it too
  */
 bbbGenerator.prototype.saveConfig = function saveConfig() {
-  this.write(".bbb-rc.json", JSON.stringify(this.bbb, null, this.bbb.indent));
+  this.dest.write(".bbb-rc.json", this.helper.normalizeJSON(this.bbb));
 };
