@@ -1,8 +1,5 @@
 /**
- * BBB yeoman generator
- *
- *
- *
+ * BBB generator for Yeoman
  */
 
 "use strict";
@@ -31,6 +28,18 @@ function spawnCommand(command, args, cb) {
 var bbbGenerator = module.exports = function bbbGenerator(args, options, config) {
   yeoman.generators.Base.apply(this, arguments);
 
+  // Get existing configurations
+  var packageJSON;
+
+  try {
+    packageJSON = this.read(path.join(process.cwd(), "package.json"));
+  } catch(e) { packageJSON = {}; }
+
+
+  this.pkg = _.defaults(packageJSON, JSON.parse(this.read("_package.json")));
+  this.bbb = {};
+
+  // Launch packages manager once the installation ends
   this.on("end", function () {
     if( options["skip-install"] ) {
       return;
@@ -119,11 +128,10 @@ bbbGenerator.prototype.askFor = function askFor() {
       return this.emit("error", err);
     }
 
-    this.appname = props.appname;
-    this.testFramework = testFrameworks[props.testFramework];
-    this.packageManager = packageManagers[props.packageManager];
-
-    this.indent = indents[props.indent];
+    this.pkg.name = props.appname;
+    this.bbb.testFramework = testFrameworks[props.testFramework];
+    this.bbb.packageManager = packageManagers[props.packageManager];
+    this.bbb.indent = indents[props.indent];
 
     done();
   }.bind(this));
@@ -147,14 +155,17 @@ bbbGenerator.prototype.app = function app() {
 
 /**
  * Generate the Package Manager configuration
- * Note: Jam configuration being managed inside `package.json`, it's config is managed
- *       in another function
  */
 bbbGenerator.prototype.genPackageManager = function genPackageManager() {
   // Bower
-  if (this.packageManager === "bower") {
+  if (this.bbb.packageManager === "bower") {
     this.write("component.json", "_component.json");
     this.write(".bowerrc", "_bowerrc");
+  }
+
+  // Delete Jam configuration if not used
+  if (this.bbb.packageManager !== "jam") {
+    delete this.pkg.jam;
   }
 };
 
@@ -177,7 +188,7 @@ bbbGenerator.prototype.genGruntfile = function genGruntfile() {
 
       // Loop through karma configuration options and delete unused test framework
       _.each(karmaConf.properties, function(node) {
-        if (node.key.name !== self.testFramework && node.key.name !== "options") {
+        if (node.key.name !== self.bbb.testFramework && node.key.name !== "options") {
           node.update("");
         }
       });
@@ -199,34 +210,23 @@ bbbGenerator.prototype.genGruntfile = function genGruntfile() {
  * Scaffhold the test directory
  */
 bbbGenerator.prototype.testScaffholding = function testScaffholding() {
-  this.directory("test/" + this.testFramework, "test/" + this.testFramework, true);
+  this.directory("test/"+ this.bbb.testFramework, "test/"+ this.bbb.testFramework, true);
 };
 
 /**
  * Generate the `package.json` file
- * Note: Jamjs configuration is also generated here
  */
 bbbGenerator.prototype.genPackageJSON = function genPackageJSON() {
-  var packageJSON = JSON.parse(this.read("_package.json"));
-
-  // Delete Jam configuration if not used
-  if (this.packageManager !== "jam") {
-    delete packageJSON.jam;
-  }
-
   // Set package settings
-  packageJSON.name = this._.slugify(this.appname);
+  this.pkg.name = this._.slugify(this.pkg.name);
+  this.pkg.version = "0.0.0";
 
-  this.write("package.json", JSON.stringify(packageJSON, null, this.indent));
+  this.write("package.json", JSON.stringify(this.pkg, null, this.bbb.indent));
 };
 
 /**
  * Save the current configuration inside `.bbbrc` files so sub-generator can use it too
  */
 bbbGenerator.prototype.saveConfig = function saveConfig() {
-  this.write(".bbb-rc.json", JSON.stringify({
-    appname       : this.appname,
-    testFramework : this.testFramework,
-    indent        : this.indent
-  }, null, this.indent));
+  this.write(".bbb-rc.json", JSON.stringify(this.bbb, null, this.bbb.indent));
 };
