@@ -10,17 +10,6 @@ var falafel = require("falafel");
 var _ = require("lodash");
 var grunt = require("grunt");
 
-// Use native in Yeoman once new version hit NPM (https://github.com/yeoman/generator/pull/223)
-var spawn = require('child_process').spawn;
-var win32 = process.platform === 'win32';
-
-function spawnCommand(command, args, cb) {
-  var winCommand = win32 ? 'cmd' : command;
-  var winArgs = win32 ? ['/c ' + command + ' ' + args.join(' ')] : args;
-
-  return spawn(winCommand, winArgs, { stdio: 'inherit' });
-}
-
 /**
  * BBB Generator constructor
  * Extend Yeoman base generator
@@ -85,14 +74,18 @@ var bbbGenerator = module.exports = function bbbGenerator(args, options, config)
       return;
     }
 
-    if (this.packageManager === "jam") {
-      spawnCommand("jam", ["upgrade"]);
-    } else if (this.packageManager === "bower") {
+    if (this.bbb.packageManager === "jam") {
+      grunt.util.spawn({
+        cmd  : "jam",
+        args : ["upgrade"],
+        opts : { stdio: "inherit" }
+      }, function() {});
+    } else if (this.bbb.packageManager === "bower") {
       this.bowerInstall ();
     }
 
     this.npmInstall();
-  });
+  }.bind(this));
 };
 util.inherits(bbbGenerator, yeoman.generators.NamedBase);
 
@@ -172,8 +165,6 @@ bbbGenerator.prototype.askFor = function askFor() {
     this.bbb.testFramework = testFrameworks[props.testFramework];
     this.bbb.packageManager = packageManagers[props.packageManager];
     this.bbb.indent = indents[props.indent];
-
-    console.log( this.pkg );
 
     done();
   }.bind(this));
