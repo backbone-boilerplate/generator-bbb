@@ -1,22 +1,23 @@
 "use strict";
 var util = require("util");
 var path = require("path");
-var yeoman = require("yeoman-generator");
 var _ = require("lodash");
+var BBBGenerator = require("../base/bbb-generator");
 
-var bbbGenerator = module.exports = function bbbGenerator(args, options, config) {
-  yeoman.generators.Base.apply(this, arguments);
+module.exports = Generator;
+
+function Generator(args, options, config) {
+  BBBGenerator.apply(this, arguments);
 
   this.moduleName = args[0];
-  this.settings = JSON.parse(this.read(path.join(process.cwd(), ".bbbrc")));
-};
+}
 
-util.inherits(bbbGenerator, yeoman.generators.NamedBase);
+util.inherits(Generator, BBBGenerator);
 
-bbbGenerator.prototype.module = function module() {
+Generator.prototype.module = function module() {
 
-  if (!this.settings) {
-    this.log.status("conflict").write("You must init your project first");
+  if (!this.bbb) {
+    this.log.writeln("You must init your project first");
     return;
   }
   if (!this.moduleName) {
@@ -24,9 +25,9 @@ bbbGenerator.prototype.module = function module() {
     return;
   }
 
-  this.copy("module.js", "app/modules/" + this.moduleName + ".js");
+  this.copy("common/module.js", "app/modules/" + this.moduleName + ".js");
 };
 
-bbbGenerator.prototype.moduleTest = function moduleTest() {
+Generator.prototype.moduleTest = function moduleTest() {
   // TODO: Generate module test scaffhold
 };
