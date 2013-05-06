@@ -10,12 +10,21 @@ var falafel = require("falafel");
 var _ = require("lodash");
 var grunt = require("grunt");
 
+
+/**
+ * Module exports
+ */
+
+module.exports = Generator;
+Generator.name = "bbb";
+
 /**
  * BBB Generator constructor
  * Extend Yeoman base generator
  * Launch packages manager once the installation ends
  */
-var bbbGenerator = module.exports = function bbbGenerator(args, options, config) {
+
+function Generator(args, options, config) {
   var self = this;
   yeoman.generators.Base.apply(this, arguments);
 
@@ -86,14 +95,16 @@ var bbbGenerator = module.exports = function bbbGenerator(args, options, config)
 
     this.npmInstall();
   }.bind(this));
-};
-util.inherits(bbbGenerator, yeoman.generators.NamedBase);
+}
+
+util.inherits(Generator, yeoman.generators.Base);
 
 /**
  * Command prompt questions
  * Extend defaults and options based on user answers
  */
-bbbGenerator.prototype.askFor = function askFor() {
+
+Generator.prototype.askFor = function askFor() {
   var done = this.async();
 
   console.log(
@@ -174,7 +185,8 @@ bbbGenerator.prototype.askFor = function askFor() {
  * Copy boilerplate main code
  * all `app/` folder, index.html and favicon
  */
-bbbGenerator.prototype.app = function app() {
+
+Generator.prototype.app = function app() {
   this.directory("app", "app", true);
   this.mkdir("vendor");
   this.mkdir("app/modules");
@@ -189,7 +201,8 @@ bbbGenerator.prototype.app = function app() {
 /**
  * Generate the Package Manager configuration
  */
-bbbGenerator.prototype.genPackageManager = function genPackageManager() {
+
+Generator.prototype.genPackageManager = function genPackageManager() {
   // Bower
   if (this.bbb.packageManager === "bower") {
     var comp = this.src.readJSON("_component.json");
@@ -208,7 +221,8 @@ bbbGenerator.prototype.genPackageManager = function genPackageManager() {
  * Generate the Gruntfile
  * Note: Use `falafel` to recurse over the Gruntfile AST and set only relevant configs
  */
-bbbGenerator.prototype.genGruntfile = function genGruntfile() {
+
+Generator.prototype.genGruntfile = function genGruntfile() {
   var self = this;
 
   var output = falafel(this.src.read("Gruntfile.js"), function(node) {
@@ -244,14 +258,16 @@ bbbGenerator.prototype.genGruntfile = function genGruntfile() {
 /**
  * Scaffhold the test directory
  */
-bbbGenerator.prototype.testScaffholding = function testScaffholding() {
+
+Generator.prototype.testScaffholding = function testScaffholding() {
   this.directory("test/"+ this.bbb.testFramework, "test/"+ this.bbb.testFramework, true);
 };
 
 /**
  * Generate the `package.json` file
  */
-bbbGenerator.prototype.genPackageJSON = function genPackageJSON() {
+
+Generator.prototype.genPackageJSON = function genPackageJSON() {
   // Set package settings
   this.pkg.name = this._.slugify(this.pkg.name);
   this.pkg.version = "0.0.0";
@@ -262,6 +278,7 @@ bbbGenerator.prototype.genPackageJSON = function genPackageJSON() {
 /**
  * Save the current configuration inside `.bbbrc` files so sub-generator can use it too
  */
-bbbGenerator.prototype.saveConfig = function saveConfig() {
+
+Generator.prototype.saveConfig = function saveConfig() {
   this.dest.write(".bbb-rc.json", this.helper.normalizeJSON(this.bbb));
 };
