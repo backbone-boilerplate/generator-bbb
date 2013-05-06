@@ -8,6 +8,8 @@ var path = require("path");
 var yeoman = require("yeoman-generator");
 var _ = require("lodash");
 var grunt = require("grunt");
+var esprima = require("esprima");
+var escodegen = require("escodegen");
 
 /**
  * Module exports
@@ -40,7 +42,9 @@ function Generator(args, options, config) {
       var src = arguments[0];
       var args = Array.prototype.slice.call(arguments, 1);
 
-      src = path.join(this.sourceRoot(), src);
+      if (!grunt.file.isPathAbsolute(src)) {
+        src = path.join(this.sourceRoot(), src);
+      }
       args.unshift(src);
 
       return gruntFunc.apply(grunt.file, args);
@@ -52,7 +56,9 @@ function Generator(args, options, config) {
       var src = arguments[0];
       var args = Array.prototype.slice.call(arguments, 1);
 
-      src = path.join(this.destinationRoot(), src);
+      if (!grunt.file.isPathAbsolute(src)) {
+        src = path.join(this.destinationRoot(), src);
+      }
       args.unshift(src);
 
       return gruntFunc.apply(grunt.file, args);
@@ -65,6 +71,28 @@ function Generator(args, options, config) {
   this.helper.normalizeJSON = function(obj) {
     if (!_.isObject(obj)) { throw new Error("normalizeJSON take an object"); }
     return JSON.stringify(obj, null, self.bbb.indent);
+  };
+
+  this.helper.normalizeJS = function(code) {
+    var syntax;
+    var output;
+    try {
+      syntax = esprima.parse(code, { raw: true, tokens: true, range: true, comment: true });
+      syntax = escodegen.attachComments(syntax, syntax.comments, syntax.tokens);
+      output = escodegen.generate(syntax, {
+        comment: true,
+        format: {
+          style: self.bbb.indent
+        },
+        quotes: "\""
+      });
+    } catch(e) {
+      output = code;
+      grunt.log.warn("Unable to parse invalid javascript file. Skipping " +
+          "whitespace normalization.");
+    }
+
+    return output;
   };
 
   // Get existing configurations

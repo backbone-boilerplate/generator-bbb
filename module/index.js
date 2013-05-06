@@ -25,7 +25,8 @@ Generator.prototype.module = function module() {
     return;
   }
 
-  this.copy("common/module.js", "app/modules/" + this.moduleName + ".js");
+  var output = this.helper.normalizeJS(this.src.read("common/module.js"));
+  this.write("app/modules/" + this.moduleName + ".js", output);
 };
 
 Generator.prototype.moduleTest = function moduleTest() {

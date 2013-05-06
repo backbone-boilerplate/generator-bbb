@@ -79,12 +79,23 @@ Generator.prototype.askFor = function askFor() {
  */
 
 Generator.prototype.app = function app() {
-  this.directory("app", "app", true);
+  var self = this;
   this.mkdir("vendor");
-  this.mkdir("app/modules");
-  this.mkdir("app/templates");
-  this.mkdir("app/styles");
-  this.mkdir("app/img");
+
+  this.src.recurse("app", function( abspath, rootdir, subdir, filename ) {
+    var code = grunt.file.read(abspath);
+    var dest = path.join("app", filename);
+
+    if (abspath.slice(-3) === ".js") {
+      code = self.helper.normalizeJS(code);
+    }
+
+    if (subdir != null) {
+      dest = path.join("app", subdir, filename);
+    }
+
+    self.dest.write(dest, code);
+  });
 
   this.copy("index.html", "index.html");
   this.copy("favicon.ico", "favicon.ico");
@@ -143,7 +154,7 @@ Generator.prototype.genGruntfile = function genGruntfile() {
     }
   });
 
-  this.dest.write("Gruntfile.js", output);
+  this.dest.write("Gruntfile.js", this.helper.normalizeJS(output));
 
 };
 
