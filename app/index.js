@@ -38,8 +38,10 @@ function Generator(args, options, config) {
       this.dest.mkdir(args[0]);
       this.destinationRoot(path.join(process.cwd(), args[0]));
     }
-    this.appname = _.last(args[0].split(/[\/\\]/g));
   }
+
+  // Infer default project name from the folder name
+  this.appname = _.last(this.destinationRoot().split(/[\/\\]/g));
 
   // Launch packages manager once the installation ends
   this.on("end", function () {
