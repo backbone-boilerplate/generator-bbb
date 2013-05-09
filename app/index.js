@@ -29,6 +29,10 @@ function Generator(args, options, config) {
   BBBGenerator.apply(this, arguments);
   InitGenerator.apply(this, arguments);
 
+
+  // Use BBB fetched via NPM as source root for the app task
+  this.sourceRoot(path.join(__dirname, "../node_modules/backbone-boilerplate/"));
+
   // Setup destination directory
   if (_.isString(args[0])) {
     if (grunt.file.isPathAbsolute(args[0])) {
@@ -42,6 +46,13 @@ function Generator(args, options, config) {
 
   // Infer default project name from the folder name
   this.appname = _.last(this.destinationRoot().split(/[\/\\]/g));
+
+  // Get source package.json relevant information
+  var bbbPkg = this.src.readJSON("package.json");
+  _.extend(this.pkg, {
+    dependencies: bbbPkg.dependencies,
+    jam: bbbPkg.jam
+  });
 
   // Launch packages manager once the installation ends
   this.on("end", function () {
@@ -109,9 +120,9 @@ Generator.prototype.app = function app() {
 Generator.prototype.genPackageManager = function genPackageManager() {
   // Bower
   if (this.bbb.packageManager === "bower") {
-    var comp = this.src.readJSON("_component.json");
+    var comp = this.src.readJSON("component.json");
     this.dest.write("component.json", this.normalizeJSON(comp));
-    var bowerrc = this.src.readJSON("_bowerrc");
+    var bowerrc = this.src.readJSON(".bowerrc");
     this.dest.write(".bowerrc", this.normalizeJSON(bowerrc));
   }
 
@@ -165,6 +176,14 @@ Generator.prototype.genGruntfile = function genGruntfile() {
 
 Generator.prototype.testScaffholding = function testScaffholding() {
   this.directory("test/"+ this.bbb.testFramework, "test/"+ this.bbb.testFramework, true);
+};
+
+/**
+ * Copy git related files
+ */
+
+Generator.prototype.generateGit = function generateGit() {
+  this.dest.write(".gitignore", "/dist/\n/node_modules/");
 };
 
 /**

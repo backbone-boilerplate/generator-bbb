@@ -75,7 +75,7 @@ function Generator(args, options, config) {
     bbbrc = this.dest.readJSON(".bbb-rc.json");
   } catch(e) { bbbrc = {}; }
 
-  this.pkg = _.extend(this.src.readJSON("_package.json"), packageJSON);
+  this.pkg = packageJSON;
   this.bbb = bbbrc;
 
 }
@@ -107,9 +107,11 @@ Generator.prototype.normalizeJS = function(code) {
       output = escodegen.generate(syntax, {
         comment: true,
         format: {
-          style: this.bbb.indent
+          indent: {
+            style: this.bbb.indent
+          },
+          quotes: "double"
         },
-        quotes: "\""
       });
     } catch(e) {
       output = code;

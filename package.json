@@ -28,7 +28,8 @@
     "lodash": "~1.2.1",
     "grunt": "~0.4.1",
     "esprima": "~1.0.2",
-    "escodegen": "0.0.22"
+    "escodegen": "0.0.22",
+    "backbone-boilerplate": "git://github.com/tbranyen/backbone-boilerplate.git#wip"
   },
   "devDependencies": {
     "mocha": "~1.9.0"
