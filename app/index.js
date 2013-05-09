@@ -62,16 +62,14 @@ function Generator(args, options, config) {
 }
 
 util.inherits(Generator, BBBGenerator);
-util.inherits(Generator, InitGenerator);
 
 /**
  * Command prompt questions
+ * Note: Directly extend these functions on the generator prototype as Yeoman run every
+ * attached method (e.g.: `.hasOwnProperty()`)
  */
 
-Generator.prototype.askFor = function askFor() {
-  InitGenerator.prototype.askFor.call(this);
-};
-
+Generator.prototype.askFor = InitGenerator.prototype.askFor;
 Generator.prototype.saveConfig = InitGenerator.prototype.saveConfig;
 
 /**
