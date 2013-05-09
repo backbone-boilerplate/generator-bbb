@@ -26,23 +26,20 @@ Generator.name = "bbb";
 
 function Generator(args, options, config) {
   var self = this;
+
+  // Set project destination path. As the app generator can take a path argument,
+  // this **must** happen before anything else
+  if (_.isString(args[0])) {
+    grunt.file.mkdir(args[0]);
+    process.chdir(args[0]);
+  }
+
+  // Extend parents generator/class
   BBBGenerator.apply(this, arguments);
   InitGenerator.apply(this, arguments);
 
-
   // Use BBB fetched via NPM as source root for the app task
   this.sourceRoot(path.join(__dirname, "../node_modules/backbone-boilerplate/"));
-
-  // Setup destination directory
-  if (_.isString(args[0])) {
-    if (grunt.file.isPathAbsolute(args[0])) {
-      grunt.file.mkdir(args[0]);
-      this.destinationRoot(args[0]);
-    } else {
-      this.dest.mkdir(args[0]);
-      this.destinationRoot(path.join(process.cwd(), args[0]));
-    }
-  }
 
   // Infer default project name from the folder name
   this.appname = _.last(this.destinationRoot().split(/[\/\\]/g));
