@@ -88,7 +88,7 @@ Generator.prototype.app = function app() {
     var dest = path.join("app", filename);
 
     if (abspath.slice(-3) === ".js") {
-      code = self.helper.normalizeJS(code);
+      code = self.normalizeJS(code);
     }
 
     if (subdir != null) {
@@ -110,9 +110,9 @@ Generator.prototype.genPackageManager = function genPackageManager() {
   // Bower
   if (this.bbb.packageManager === "bower") {
     var comp = this.src.readJSON("_component.json");
-    this.dest.write("component.json", this.helper.normalizeJSON(comp));
+    this.dest.write("component.json", this.normalizeJSON(comp));
     var bowerrc = this.src.readJSON("_bowerrc");
-    this.dest.write(".bowerrc", this.helper.normalizeJSON(bowerrc));
+    this.dest.write(".bowerrc", this.normalizeJSON(bowerrc));
   }
 
   // Delete Jam configuration if not used
@@ -155,7 +155,7 @@ Generator.prototype.genGruntfile = function genGruntfile() {
     }
   });
 
-  this.dest.write("Gruntfile.js", this.helper.normalizeJS(output));
+  this.dest.write("Gruntfile.js", this.normalizeJS(output));
 
 };
 
@@ -176,5 +176,5 @@ Generator.prototype.genPackageJSON = function genPackageJSON() {
   this.pkg.name = this._.slugify(this.pkg.name);
   this.pkg.version = "0.0.0";
 
-  this.dest.write("package.json", this.helper.normalizeJSON(this.pkg));
+  this.dest.write("package.json", this.normalizeJSON(this.pkg));
 };

@@ -131,5 +131,5 @@ Generator.prototype.askFor = function askFor() {
  */
 
 Generator.prototype.saveConfig = function saveConfig() {
-  this.dest.write(".bbb-rc.json", this.helper.normalizeJSON(this.bbb));
+  this.dest.write(".bbb-rc.json", this.normalizeJSON(this.bbb));
 };

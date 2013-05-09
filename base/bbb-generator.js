@@ -65,36 +65,6 @@ function Generator(args, options, config) {
     }.bind(this);
   }, this);
 
-  // Attach helper functions
-  this.helper = {};
-
-  this.helper.normalizeJSON = function(obj) {
-    if (!_.isObject(obj)) { throw new Error("normalizeJSON take an object"); }
-    return JSON.stringify(obj, null, self.bbb.indent);
-  };
-
-  this.helper.normalizeJS = function(code) {
-    var syntax;
-    var output;
-    try {
-      syntax = esprima.parse(code, { raw: true, tokens: true, range: true, comment: true });
-      syntax = escodegen.attachComments(syntax, syntax.comments, syntax.tokens);
-      output = escodegen.generate(syntax, {
-        comment: true,
-        format: {
-          style: self.bbb.indent
-        },
-        quotes: "\""
-      });
-    } catch(e) {
-      output = code;
-      grunt.log.warn("Unable to parse invalid javascript file. Skipping " +
-          "whitespace normalization.");
-    }
-
-    return output;
-  };
-
   // Get existing configurations
   var packageJSON;
   try {
@@ -111,3 +81,41 @@ function Generator(args, options, config) {
 }
 
 util.inherits(Generator, yeoman.generators.Base);
+
+/**
+ * Stringify an object and normalize whitespace with project preferences.
+ * @param  {object} obj Raw object containing valid JSON value (no functions)
+ * @return {string}     JSON stringified object with normalized whitespace
+ */
+Generator.prototype.normalizeJSON = function(obj) {
+  if (!_.isObject(obj)) { throw new Error("normalizeJSON take an object"); }
+  return JSON.stringify(obj, null, this.bbb.indent);
+};
+
+/**
+ * Normalize a JavaScript code string with project settings
+ * TODO: Enhance with style guide support
+ * @param  {String} code JavaScript code contained in a String
+ * @return {String}      Normalized JavaScript code (whitespace)
+ */
+Generator.prototype.normalizeJS = function(code) {
+    var syntax;
+    var output;
+    try {
+      syntax = esprima.parse(code, { raw: true, tokens: true, range: true, comment: true });
+      syntax = escodegen.attachComments(syntax, syntax.comments, syntax.tokens);
+      output = escodegen.generate(syntax, {
+        comment: true,
+        format: {
+          style: this.bbb.indent
+        },
+        quotes: "\""
+      });
+    } catch(e) {
+      output = code;
+      grunt.log.warn("Unable to parse invalid javascript file. Skipping " +
+          "whitespace normalization.");
+    }
+
+    return output;
+  };
