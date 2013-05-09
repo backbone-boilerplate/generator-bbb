@@ -48,11 +48,8 @@ function Generator(args, options, config) {
   this.appname = _.last(this.destinationRoot().split(/[\/\\]/g));
 
   // Get source package.json relevant information
-  var bbbPkg = this.src.readJSON("package.json");
-  _.extend(this.pkg, {
-    dependencies: bbbPkg.dependencies,
-    jam: bbbPkg.jam
-  });
+  var bbbPkg = _.pick(this.src.readJSON("package.json"), "dependencies", "jam");
+  _.extend(this.pkg, bbbPkg);
 
   // Launch packages manager once the installation ends
   this.on("end", function () {
