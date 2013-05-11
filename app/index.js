@@ -1,5 +1,6 @@
 /**
- * BBB generator for Yeoman
+ * BBB `app` generator for Yeoman
+ * Scaffhold the project structure
  */
 
 "use strict";
@@ -8,7 +9,6 @@ var path = require("path");
 var falafel = require("falafel");
 var _ = require("lodash");
 var grunt = require("grunt");
-var BBBGenerator = require("../base/bbb-generator");
 var InitGenerator = require("../init/index");
 
 /**
@@ -20,29 +20,17 @@ Generator.name = "bbb";
 
 /**
  * BBB Generator constructor
- * Extend Yeoman base generator
+ * Extend the bbb:init generator
  * Launch packages manager once the installation ends
  */
 
 function Generator(args, options, config) {
-  var self = this;
-
-  // Set project destination path. As the app generator can take a path argument,
-  // this **must** happen before anything else
-  if (_.isString(args[0])) {
-    grunt.file.mkdir(args[0]);
-    process.chdir(args[0]);
-  }
 
   // Extend parents generator/class
-  BBBGenerator.apply(this, arguments);
   InitGenerator.apply(this, arguments);
 
   // Use BBB fetched via NPM as source root for the app task
   this.sourceRoot(path.join(__dirname, "../node_modules/backbone-boilerplate/"));
-
-  // Infer default project name from the folder name
-  this.appname = _.last(this.destinationRoot().split(/[\/\\]/g));
 
   // Get source package.json relevant information
   var bbbPkg = _.pick(this.src.readJSON("package.json"), "dependencies", "jam");
@@ -68,12 +56,12 @@ function Generator(args, options, config) {
   }.bind(this));
 }
 
-util.inherits(Generator, BBBGenerator);
+util.inherits(Generator, InitGenerator);
 
 /**
  * Command prompt questions
  * Note: Directly extend these functions on the generator prototype as Yeoman run every
- * attached method (e.g.: `.hasOwnProperty()`)
+ * direct prototype attached method (e.g.: `.hasOwnProperty()`)
  */
 
 Generator.prototype.askFor = InitGenerator.prototype.askFor;
@@ -103,12 +91,13 @@ Generator.prototype.app = function app() {
     self.dest.write(dest, code);
   });
 
+  this.dest.write("README.md", "");
   this.copy("index.html", "index.html");
   this.copy("favicon.ico", "favicon.ico");
 };
 
 /**
- * Generate the Package Manager configuration
+ * Generate the Packages Managers configurations
  */
 
 Generator.prototype.genPackageManager = function genPackageManager() {
@@ -173,7 +162,7 @@ Generator.prototype.testScaffholding = function testScaffholding() {
 };
 
 /**
- * Copy git related files
+ * Generate git related files
  */
 
 Generator.prototype.generateGit = function generateGit() {

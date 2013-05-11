@@ -1,10 +1,10 @@
 /**
- * BBB generator for Yeoman
+ * BBB `init` generator for Yeoman
+ * Initialize a project configuration file.
  */
 
 "use strict";
 var util = require("util");
-var path = require("path");
 var _ = require("lodash");
 var grunt = require("grunt");
 var BBBGenerator = require("../base/bbb-generator");
@@ -14,15 +14,27 @@ var BBBGenerator = require("../base/bbb-generator");
  */
 
 module.exports = Generator;
+Generator.name = "bbb:init";
 
 /**
  * BBB Generator constructor
  * Extend Yeoman base generator
- * Launch packages manager once the installation ends
  */
 
 function Generator(args, options, config) {
+
+  // Set project destination path. As the init generator can take a path argument,
+  // this **must** happen before anything else
+  if (_.isString(args[0])) {
+    grunt.file.mkdir(args[0]);
+    process.chdir(args[0]);
+  }
+
+  // Extend parents generator/class
   BBBGenerator.apply(this, arguments);
+
+  // Infer default project name from the folder name
+  this.appname = _.last(this.destinationRoot().split(/[\/\\]/g));
 }
 
 util.inherits(Generator, BBBGenerator);
@@ -127,7 +139,7 @@ Generator.prototype.askFor = function askFor() {
 };
 
 /**
- * Save the current configuration inside `.bbbrc` files so sub-generator can use it too
+ * Save the current configuration inside `.bbb-rc.json` to be use by sub-generators
  */
 
 Generator.prototype.saveConfig = function saveConfig() {
