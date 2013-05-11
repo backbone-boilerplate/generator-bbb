@@ -5,8 +5,8 @@
 
 "use strict";
 var util = require("util");
-var path = require("path");
 var _ = require("lodash");
+var grunt = require("grunt");
 var BBBGenerator = require("../base/bbb-generator");
 
 /**
@@ -37,11 +37,11 @@ util.inherits(Generator, BBBGenerator);
 Generator.prototype.module = function module() {
 
   if (!this.bbb) {
-    this.log.writeln("You must init your project first");
+    grunt.log.error("You must init your project first");
     return;
   }
   if (!this.moduleName) {
-    this.log.writeln(">> You must provide a name for your module");
+    grunt.log.error("You must provide a name for your module");
     return;
   }
 
