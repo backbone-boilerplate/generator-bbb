@@ -14,7 +14,7 @@ var BBBGenerator = require("../base/bbb-generator");
  */
 
 module.exports = Generator;
-Generator.name = "bbb:init";
+Generator._name = "bbb:init";
 
 /**
  * BBB Generator constructor
@@ -47,6 +47,8 @@ util.inherits(Generator, BBBGenerator);
 Generator.prototype.askFor = function askFor() {
   var done = this.async();
 
+  var force = (this.constructor._name === "bbb:init");
+
   console.log(
     "\n    .-~0~-." +
     "\n   /   ___ \\ " +
@@ -61,13 +63,13 @@ Generator.prototype.askFor = function askFor() {
 
   var prompts = [];
 
-  !this.bbb.name && prompts.push({
+  (!this.bbb.name || force) && prompts.push({
     name: "name",
     message: "Your project name:",
     default: this.appname // Default to current folder name
   });
 
-  !this.bbb.testFramework && prompts.push({
+  (!this.bbb.testFramework || force) && prompts.push({
     name: "testFramework",
     message: "Which test framework do you want to use?" +
       "\n 1) QUnit" +
@@ -77,7 +79,7 @@ Generator.prototype.askFor = function askFor() {
     default: "1"
   });
 
-  !this.bbb.packageManager && prompts.push({
+  (!this.bbb.packageManager || force) && prompts.push({
     name: "packageManager",
     message: "Which package manager do you want to use?" +
       "\n 1) Jam" +
@@ -87,7 +89,7 @@ Generator.prototype.askFor = function askFor() {
     default: "1"
   });
 
-  !this.bbb.indent && prompts.push({
+  (!this.bbb.indent || force) && prompts.push({
     name: "indent",
     message: "What about indentation?" +
       "\n 1) Spaces (2)" +
