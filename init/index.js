@@ -79,6 +79,15 @@ Generator.prototype.askFor = function askFor() {
     default: "1"
   });
 
+  (!this.bbb.moduleStyle || force) && prompts.push({
+    name: "moduleStyle",
+    message: "Choose your module style" +
+      "\n 1) AMD" +
+      "\n 2) Commonjs" +
+      "\n Default: ",
+    default: "1"
+  });
+
   (!this.bbb.indent || force) && prompts.push({
     name: "indent",
     message: "What about indentation?" +
@@ -93,6 +102,11 @@ Generator.prototype.askFor = function askFor() {
     1: "qunit",
     2: "mocha",
     3: "jasmine"
+  };
+
+  var moduleStyles = {
+    1: "AMD",
+    2: "commonjs"
   };
 
   var indents = {
@@ -111,6 +125,8 @@ Generator.prototype.askFor = function askFor() {
         this.bbb.testFramework = testFrameworks[val];
       } else if (name === "indent") {
         this.bbb.indent = indents[val];
+      } else if (name === "moduleStyle") {
+        this.bbb.moduleStyle = moduleStyles[val];
       } else {
         this.bbb[name] = val;
       }
