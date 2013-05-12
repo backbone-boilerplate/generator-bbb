@@ -99,25 +99,33 @@ Generator.prototype.normalizeJSON = function(obj) {
  * @return {String}      Normalized JavaScript code (whitespace)
  */
 Generator.prototype.normalizeJS = function(code) {
-    var syntax;
-    var output;
-    try {
-      syntax = esprima.parse(code, { raw: true, tokens: true, range: true, comment: true });
-      syntax = escodegen.attachComments(syntax, syntax.comments, syntax.tokens);
-      output = escodegen.generate(syntax, {
-        comment: true,
-        format: {
-          indent: {
-            style: this.bbb.indent
-          },
-          quotes: "double"
+  var syntax;
+  var output;
+  try {
+    syntax = esprima.parse(code, { raw: true, tokens: true, range: true, comment: true });
+    syntax = escodegen.attachComments(syntax, syntax.comments, syntax.tokens);
+    output = escodegen.generate(syntax, {
+      comment: true,
+      format: {
+        indent: {
+          style: this.bbb.indent
         },
-      });
-    } catch(e) {
-      output = code;
-      grunt.log.warn("Unable to parse invalid javascript file. Skipping " +
-          "whitespace normalization.");
-    }
+        quotes: "double"
+      },
+    });
+  } catch(e) {
+    output = code;
+    grunt.log.warn("Unable to parse invalid javascript file. Skipping " +
+        "whitespace normalization.");
+  }
 
-    return output;
-  };
+  return output;
+};
+
+Generator.prototype.jamInstall = function() {
+  grunt.util.spawn({
+    cmd  : "jam",
+    args : ["upgrade"],
+    opts : { stdio: "inherit" }
+  }, function() {});
+};

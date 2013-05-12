@@ -42,16 +42,8 @@ function Generator(args, options, config) {
       return;
     }
 
-    if (this.bbb.packageManager === "jam") {
-      grunt.util.spawn({
-        cmd  : "jam",
-        args : ["upgrade"],
-        opts : { stdio: "inherit" }
-      }, function() {});
-    } else if (this.bbb.packageManager === "bower") {
-      this.bowerInstall ();
-    }
-
+    this.jamInstall();
+    this.bowerInstall();
     this.npmInstall();
   }.bind(this));
 }
@@ -102,17 +94,10 @@ Generator.prototype.app = function app() {
 
 Generator.prototype.genPackageManager = function genPackageManager() {
   // Bower
-  if (this.bbb.packageManager === "bower") {
-    var comp = this.src.readJSON("component.json");
-    this.dest.write("component.json", this.normalizeJSON(comp));
-    var bowerrc = this.src.readJSON(".bowerrc");
-    this.dest.write(".bowerrc", this.normalizeJSON(bowerrc));
-  }
-
-  // Delete Jam configuration if not used
-  if (this.bbb.packageManager !== "jam") {
-    delete this.pkg.jam;
-  }
+  var comp = this.src.readJSON("component.json");
+  this.dest.write("component.json", this.normalizeJSON(comp));
+  var bowerrc = this.src.readJSON(".bowerrc");
+  this.dest.write(".bowerrc", this.normalizeJSON(bowerrc));
 };
 
 /**

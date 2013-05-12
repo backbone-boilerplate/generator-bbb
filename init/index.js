@@ -79,16 +79,6 @@ Generator.prototype.askFor = function askFor() {
     default: "1"
   });
 
-  (!this.bbb.packageManager || force) && prompts.push({
-    name: "packageManager",
-    message: "Which package manager do you want to use?" +
-      "\n 1) Jam" +
-      "\n 2) Bower" +
-      "\n 3) None" +
-      "\n Default: ",
-    default: "1"
-  });
-
   (!this.bbb.indent || force) && prompts.push({
     name: "indent",
     message: "What about indentation?" +
@@ -105,12 +95,6 @@ Generator.prototype.askFor = function askFor() {
     3: "jasmine"
   };
 
-  var packageManagers = {
-    1: "jam",
-    2: "bower",
-    3: "none"
-  };
-
   var indents = {
     1: "  ",
     3: "    ",
@@ -125,8 +109,6 @@ Generator.prototype.askFor = function askFor() {
     _.each(props, function(val, name) {
       if (name === "testFramework") {
         this.bbb.testFramework = testFrameworks[val];
-      } else if (name === "packageManager") {
-        this.bbb.packageManager = packageManagers[val];
       } else if (name === "indent") {
         this.bbb.indent = indents[val];
       } else {
