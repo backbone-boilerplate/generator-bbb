@@ -88,6 +88,15 @@ Generator.prototype.askFor = function askFor() {
     default: "1"
   });
 
+  (!this.bbb.templateEngine || force) && prompts.push({
+    name: "templateEngine",
+    message: "Choose your template engine" +
+      "\n 1) Underscore.js" +
+      "\n 2) Handlebars" +
+      "\n Default: ",
+    default: "1"
+  });
+
   (!this.bbb.indent || force) && prompts.push({
     name: "indent",
     message: "What about indentation?" +
@@ -109,6 +118,11 @@ Generator.prototype.askFor = function askFor() {
     2: "commonjs"
   };
 
+  var templateEngines = {
+    1: "underscore",
+    2: "handlebars"
+  };
+
   var indents = {
     1: "  ",
     3: "    ",
@@ -127,6 +141,8 @@ Generator.prototype.askFor = function askFor() {
         this.bbb.indent = indents[val];
       } else if (name === "moduleStyle") {
         this.bbb.moduleStyle = moduleStyles[val];
+      } else if (name === "templateEngine") {
+        this.bbb.templateEngine = templateEngines[val];
       } else {
         this.bbb[name] = val;
       }

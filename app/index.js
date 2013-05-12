@@ -72,6 +72,11 @@ Generator.prototype.app = function app() {
     var code = grunt.file.read(abspath);
     var dest = path.join("app", filename);
 
+    // Manage app.js elsewhere
+    if (filename === "app.js") {
+      return;
+    }
+
     if (abspath.slice(-3) === ".js") {
       code = self.normalizeJS(code);
     }
@@ -86,6 +91,36 @@ Generator.prototype.app = function app() {
   this.dest.write("README.md", "");
   this.copy("index.html", "index.html");
   this.copy("favicon.ico", "favicon.ico");
+};
+
+/**
+ * Generate the `app/app.js` file
+ * Manage Templating engine
+ */
+
+Generator.prototype.genAppJs = function genAppJs() {
+  var self = this;
+  var appFile = this.src.read("app/app.js");
+
+  if (this.bbb.templateEngine === "handlebars") {
+    appFile = falafel(appFile, function(node) {
+      if (node.type === "ExpressionStatement" &&
+          node.expression.type === "CallExpression" &&
+          node.expression.callee.type === "MemberExpression" &&
+          node.expression.callee.object.name === "LayoutManager" &&
+          node.expression.callee.property.name === "configure") {
+        var LMConfig = node.expression.arguments[0];
+
+        var fetchConf = _.filter(LMConfig.properties, function(n) {
+          return n.key.name === "fetch";
+        })[0].value;
+
+        fetchConf.update(self.src.read("../../templates/partial.handlebars-fetch.js"));
+      }
+    });
+  }
+
+  this.dest.write("app/app.js", this.normalizeJS(appFile));
 };
 
 /**
@@ -162,6 +197,10 @@ Generator.prototype.genPackageJSON = function genPackageJSON() {
   // Set package settings
   this.pkg.name = this._.slugify(this.pkg.name);
   this.pkg.version = "0.0.0";
+
+  if (this.bbb.templateEngine === "handlebars") {
+    this.pkg.jam.dependencies.handlebars = "1.0.0-beta.6.jam.1";
+  }
 
   this.dest.write("package.json", this.normalizeJSON(this.pkg));
 };
