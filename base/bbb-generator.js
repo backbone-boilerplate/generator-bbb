@@ -10,6 +10,7 @@ var _ = require("lodash");
 var grunt = require("grunt");
 var esprima = require("esprima");
 var escodegen = require("escodegen");
+var cli = require("./cli");
 
 /**
  * Module exports
@@ -64,6 +65,9 @@ function Generator(args, options, config) {
       return gruntFunc.apply(grunt.file, args);
     }.bind(this);
   }, this);
+
+  // Extend BBB cli
+  _.assign(this, cli);
 
   // Get existing configurations
   var packageJSON;

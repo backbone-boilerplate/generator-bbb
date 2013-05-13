@@ -29,7 +29,8 @@
     "grunt": "~0.4.1",
     "esprima": "~1.0.2",
     "escodegen": "0.0.22",
-    "backbone-boilerplate": "git://github.com/tbranyen/backbone-boilerplate.git#wip"
+    "backbone-boilerplate": "git://github.com/tbranyen/backbone-boilerplate.git#wip",
+    "charm": "~0.1.2"
   },
   "devDependencies": {
     "mocha": "~1.9.0"
