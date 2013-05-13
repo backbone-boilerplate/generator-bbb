@@ -54,5 +54,6 @@ Generator.prototype.module = function module() {
  */
 
 Generator.prototype.moduleTest = function moduleTest() {
-  // TODO: Generate module test scaffhold
+  var dest = "test/" + this.bbb.testFramework + "/tests/" + this.moduleName + "js";
+  this.dest.write(dest, "");
 };
