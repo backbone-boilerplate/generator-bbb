@@ -69,6 +69,13 @@ Generator.prototype.askFor = function() {
       name: "CommonJs",
       value: "commonjs"
     }]
+  }, {
+    name: "projectName",
+    message: "Projet name",
+    default: "Foo yeah"
+  }, {
+    name: "authorName",
+    message: "Your name",
   }], function(answers) {
     console.log(JSON.stringify(answers, null, "  "));
     done();

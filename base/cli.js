@@ -42,16 +42,14 @@ _cli.rawlist = function(question, cb) {
   function renderChoices() {
     choices.forEach(function(choice, i) {
       (i === selected) && charm.foreground("cyan");
-      charm.write("  " + (i + 1) + ") " + choice.name + "\r\n");
-      charm.foreground("white");
+      charm.write("  " + (i + 1) + ") " + choice.name + "\r\n").foreground("white");
     });
     charm.write("  Default (1) ");
   }
 
   function reRender() {
     _.each(_.range(choices.length + 1), function() {
-      charm.up(1);
-      charm.erase("line");
+      charm.up(1).erase("line");
     });
     renderChoices();
   }
@@ -85,12 +83,11 @@ _cli.list = function(question, cb) {
 
   function renderChoices() {
     choices.forEach(function(choice, i) {
-      charm.foreground("cyan");
-      charm.write("  [" + (i === selected ? "X" : " ") + "] ");
+      charm.foreground("cyan").write("  [" + (i === selected ? "X" : " ") + "] ");
       (i !== selected) && charm.foreground("white");
-      charm.write(choice.name + "\r\n");
-      charm.foreground("white");
+      charm.write(choice.name + "\r\n").foreground("white");
     });
+    charm.display("dim").write("(Use arrow key)").display("reset");
   }
 
   // Move the selected marker on keypress
@@ -104,8 +101,7 @@ _cli.list = function(question, cb) {
     }
     charm.erase("line");
     choices.forEach(function() {
-      charm.up(1);
-      charm.erase("line");
+      charm.up(1).erase("line");
     });
     renderChoices();
   });
@@ -124,19 +120,46 @@ _cli.list = function(question, cb) {
 };
 
 _cli.input = function(question, cb) {
-  commander.prompt(question.message + " (default \"" + question.default + "\") ", function(value) {
-    if (!value.length) {
-      value = question.default;
-    }
-    cb(null, {
-      name: question.name,
-      value: value
-    });
+
+  function render() {
+    charm.write(question.message);
+    question.default && charm.write(" (default \"" + question.default + "\")");
+    charm.write(": ");
+  }
+
+  // Once user confirm (enter key)
+  rlVent.once("line", function(input) {
+    var value = input || question.default || "";
+    charm.up(1).erase("line");
+    render();
+    charm.foreground("cyan").write(value).foreground("white").write("\r\n");
+    cb(value);
   });
+
+  // Init
+  render();
+
 };
 
 _cli.confirm = function() {
+  function render() {
+    charm.write(question.message);
+    charm.write(" (Y/n) ");
+  }
 
+  // Once user confirm (enter key)
+  rlVent.once("line", function(input) {
+    var value = input || question.default || "";
+    charm.up(1);
+    charm.erase("line");
+    render();
+    charm.foreground("cyan").write(value).foreground("white");
+    charm.write("\r\n");
+    cb(value);
+  });
+
+  // Init
+  render();
 };
 
 
