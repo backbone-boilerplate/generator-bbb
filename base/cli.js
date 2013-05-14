@@ -31,6 +31,14 @@ function normalizeChoices(choices) {
   });
 }
 
+function cleanLine(n) {
+  n || (n = 1);
+  charm.erase("line");
+  _.each(_.range(n), function() {
+    charm.up(1).erase("line");
+  });
+}
+
 /**
  * Client interfaces
  */
@@ -48,9 +56,7 @@ _cli.rawlist = function(question, cb) {
   }
 
   function reRender() {
-    _.each(_.range(choices.length + 1), function() {
-      charm.up(1).erase("line");
-    });
+    cleanLine(choices.length + 1);
     renderChoices();
   }
 
@@ -61,7 +67,6 @@ _cli.rawlist = function(question, cb) {
     }
     if (choices[input - 1] != null) {
       selected = input - 1;
-      charm.erase("line");
       reRender();
       charm.write( input + "\r\n");
       rlVent.removeAllListeners("line");
@@ -99,10 +104,7 @@ _cli.list = function(question, cb) {
     } else {
       return; // don't render if nothing changed
     }
-    charm.erase("line");
-    choices.forEach(function() {
-      charm.up(1).erase("line");
-    });
+    cleanLine(choices.length);
     renderChoices();
   });
 
@@ -130,7 +132,7 @@ _cli.input = function(question, cb) {
   // Once user confirm (enter key)
   rlVent.once("line", function(input) {
     var value = input || question.default || "";
-    charm.up(1).erase("line");
+    cleanLine();
     render();
     charm.foreground("cyan").write(value).foreground("white").write("\r\n");
     cb(value);
@@ -153,8 +155,7 @@ _cli.confirm = function(question, cb) {
     if (input != null) {
       value = /^y(es)?/i.test(input);
     }
-    charm.up(1);
-    charm.erase("line");
+    cleanLine();
     render();
     charm.foreground("cyan").write(value ? "Yes" : "No").foreground("white");
     charm.write("\r\n");
