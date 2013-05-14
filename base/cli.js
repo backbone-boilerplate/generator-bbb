@@ -56,8 +56,8 @@ _cli.rawlist = function(question, cb) {
 
   // Save user answer and update prompt to show selected option.
   rlVent.on("line", function(input) {
-    if (input == null) {
-      input = 0;
+    if (input == null || input === "") {
+      input = 1;
     }
     if (choices[input - 1] != null) {
       selected = input - 1;
