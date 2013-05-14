@@ -76,6 +76,10 @@ Generator.prototype.askFor = function() {
   }, {
     name: "authorName",
     message: "Your name",
+  }, {
+    type: "confirm",
+    name: "pizza",
+    message: "Do you like pizza?",
   }], function(answers) {
     console.log(JSON.stringify(answers, null, "  "));
     done();

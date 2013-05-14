@@ -141,7 +141,7 @@ _cli.input = function(question, cb) {
 
 };
 
-_cli.confirm = function() {
+_cli.confirm = function(question, cb) {
   function render() {
     charm.write(question.message);
     charm.write(" (Y/n) ");
@@ -149,11 +149,14 @@ _cli.confirm = function() {
 
   // Once user confirm (enter key)
   rlVent.once("line", function(input) {
-    var value = input || question.default || "";
+    var value = true;
+    if (input != null) {
+      value = /^y(es)?/i.test(input);
+    }
     charm.up(1);
     charm.erase("line");
     render();
-    charm.foreground("cyan").write(value).foreground("white");
+    charm.foreground("cyan").write(value ? "Yes" : "No").foreground("white");
     charm.write("\r\n");
     cb(value);
   });
@@ -164,7 +167,7 @@ _cli.confirm = function() {
 
 
 /**
- * Public Yeoman interface
+ * Public CLI helper interface
  * @param  {array}   questions  Questions settings array
  * @param  {Function} cb        Callback being passed the user answers
  * @return {null}
