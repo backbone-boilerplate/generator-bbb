@@ -88,11 +88,11 @@ _cli.list = function(question, cb) {
 
   function renderChoices() {
     choices.forEach(function(choice, i) {
+      charm.left(300);
       charm.foreground("cyan").write("  [" + (i === selected ? "X" : " ") + "] ");
       (i !== selected) && charm.foreground("white");
       charm.write(choice.name + "\r\n").foreground("white");
     });
-    charm.display("dim").write("(Use arrow key)").display("reset");
   }
 
   // Move the selected marker on keypress
@@ -111,6 +111,7 @@ _cli.list = function(question, cb) {
   // Once user confirm (enter key)
   rlVent.once("line", function() {
     var choice = choices[selected];
+    cleanLine();
     rlVent.removeAllListeners("keypress");
     cb(choice.value);
   });
@@ -118,6 +119,7 @@ _cli.list = function(question, cb) {
   // Init the prompt
   charm.write(question.message + "\r\n");
   renderChoices();
+  charm.display("dim").write("(Use arrow key)").display("reset");
 
 };
 
