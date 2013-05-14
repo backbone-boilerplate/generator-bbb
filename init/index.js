@@ -48,14 +48,29 @@ Generator.prototype.askFor = function() {
   var done = this.async();
 
   this.questionPrompt([{
-    type: "checkbox",
+    type: "rawlist",
+    name: "templateEngine",
     message: "Which template FW:",
     choices: [{
-      name: "Handlebars"
+      name: "Handlebars",
+      value: "handlebars"
     }, {
-      name: "Underscore"
+      name: "Underscore",
+      value: "underscore"
     }]
-  }], function() {
+  }, {
+    type: "list",
+    name: "moduleStyle",
+    message: "Which module style:",
+    choices: [{
+      name: "AMD",
+      value: "amd"
+    }, {
+      name: "CommonJs",
+      value: "commonjs"
+    }]
+  }], function(answers) {
+    console.log(JSON.stringify(answers, null, "  "));
     done();
   });
 };

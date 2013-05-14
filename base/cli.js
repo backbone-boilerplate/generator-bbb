@@ -15,34 +15,78 @@ var cli = module.exports;
 var _cli = {};
 
 /**
+ * Helpers functions
+ */
+
+function normalizeChoices(choices) {
+  return _.map(choices, function(val) {
+    if (_.isString(val)) {
+      return { name : val, value: val };
+    }
+
+    return {
+      name: val.name || val.value,
+      value: val.value || val.name
+    };
+  });
+}
+
+/**
  * Client interfaces
  */
 
-_cli.list = function(question, cb) {
-  var choices = _.map(question.choices, function(val) {
-    if (_.isString(val)) {
-      return val;
-    }
-    return val.name;
-  });
-
-  grunt.log.writeln(question.message);
-  commander.choose(choices, function(i) {
-    cb(null, {
-      name: question.name,
-      value: question.choices[i].value || question.choices[i]
-    });
-  });
-};
-
-_cli.checkbox = function(question, cb) {
+_cli.rawlist = function(question, cb) {
   var selected = 0;
-  var choices = question.choices;
+  var choices  = normalizeChoices(question.choices);
 
   function renderChoices() {
-    choices.forEach(function( choice, i ) {
+    choices.forEach(function(choice, i) {
+      (i === selected) && charm.foreground("cyan");
+      charm.write("  " + (i + 1) + ") " + choice.name + "\r\n");
+      charm.foreground("white");
+    });
+    charm.write("  Default (1) ");
+  }
+
+  function reRender() {
+    _.each(_.range(choices.length + 1), function() {
+      charm.up(1);
+      charm.erase("line");
+    });
+    renderChoices();
+  }
+
+  // Save user answer and update prompt to show selected option.
+  rlVent.on("line", function(input) {
+    if (input == null) {
+      input = 0;
+    }
+    if (choices[input - 1] != null) {
+      selected = input - 1;
+      charm.erase("line");
+      reRender();
+      charm.write( input + "\r\n");
+      rlVent.removeAllListeners("line");
+      cb(choices[input - 1].value);
+      return;
+    }
+    reRender();
+  });
+
+  // Init the prompt
+  charm.write(question.message + "\r\n");
+  renderChoices();
+
+};
+
+_cli.list = function(question, cb) {
+  var selected = 0;
+  var choices  = normalizeChoices(question.choices);
+
+  function renderChoices() {
+    choices.forEach(function(choice, i) {
       charm.foreground("cyan");
-      charm.write("[" + (i === selected ? "X" : " ") + "] ");
+      charm.write("  [" + (i === selected ? "X" : " ") + "] ");
       (i !== selected) && charm.foreground("white");
       charm.write(choice.name + "\r\n");
       charm.foreground("white");
@@ -51,19 +95,26 @@ _cli.checkbox = function(question, cb) {
 
   // Move the selected marker on keypress
   rlVent.on("keypress", function(s, key) {
-    if( key.name === "up" && (selected - 1) >= 0 ) {
+    if (key.name === "up" && (selected - 1) >= 0) {
       selected--;
-    } else if( key.name === "down" && (selected + 1) < choices.length ){
+    } else if (key.name === "down" && (selected + 1) < choices.length) {
       selected++;
     } else {
       return; // don't render if nothing changed
     }
     charm.erase("line");
-    question.choices.forEach(function() {
+    choices.forEach(function() {
       charm.up(1);
       charm.erase("line");
     });
     renderChoices();
+  });
+
+  // Once user confirm (enter key)
+  rlVent.once("line", function() {
+    var choice = choices[selected];
+    rlVent.removeAllListeners("keypress");
+    cb(choice.value);
   });
 
   // Init the prompt
@@ -95,28 +146,42 @@ _cli.confirm = function() {
  * @param  {Function} cb        Callback being passed the user answers
  * @return {null}
  */
-cli.questionPrompt = function prompt(questions, cb) {
+cli.questionPrompt = function prompt(questions, allDone) {
 
   var rl = readline.createInterface(process.stdin, process.stdout);
+  var answers = {};
 
   process.stdin.on("keypress", function(s, key) {
     rlVent.emit("keypress", s, key);
   });
-  rl.on("line", function(line) {
-    rlVent.emit("line");
+  rl.on("line", function() {
+    var args = Array.prototype.slice.call(arguments, 0);
+    rlVent.emit.apply(rlVent, ["line"].concat(args));
   });
 
-  async.mapSeries(questions, function(question, done) {
-    if (_.isFunction(_cli[question.type])) {
-      _cli[question.type](question, done);
-    } else {
-      _cli.input(question, done);
+  async.mapSeries(questions,
+    // Each question
+    function(question, done) {
+      // Callback to save answer
+      var after = function(answer) {
+        answers[question.name] = answer;
+        done(null, answer);
+      };
+
+      console.log();
+
+      if (_.isFunction(_cli[question.type])) {
+        _cli[question.type](question, after);
+      } else {
+        _cli.input(question, after);
+      }
+    },
+    // After all questions
+    function() {
+      rl.close();
+      if (!_.isFunction(allDone)) { return; }
+      allDone(answers);
     }
-  }, function() {
-    rl.close();
-    if (_.isFunction(done)) {
-      done.apply(null, arguments);
-    }
-  });
+  );
 };
 
