@@ -30,7 +30,8 @@
     "esprima": "~1.0.2",
     "escodegen": "0.0.22",
     "backbone-boilerplate": "git://github.com/tbranyen/backbone-boilerplate.git#wip",
-    "charm": "~0.1.2"
+    "charm": "~0.1.2",
+    "async": "~0.2.8"
   },
   "devDependencies": {
     "mocha": "~1.9.0"

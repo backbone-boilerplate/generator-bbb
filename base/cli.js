@@ -1,9 +1,19 @@
-var grunt = require("grunt");
+/**
+ * Inquire.js
+ * A collection of common interactive command line user interfaces.
+ */
+
+"use strict";
 var _ = require("lodash");
 var readline = require("readline");
 var charm = require("charm")(process.stdout);
-var async = grunt.util.async;
+var async = require("async");
 var EventEmitter = require("events").EventEmitter;
+
+/**
+ * Global readline events "façace"
+ * @type {EventEmitter}
+ */
 
 var rlVent = new EventEmitter();
 
@@ -18,6 +28,7 @@ var _cli = {};
  * Helpers functions
  */
 
+// Normalize choices object keys
 function normalizeChoices(choices) {
   return _.map(choices, function(val) {
     if (_.isString(val)) {
@@ -31,6 +42,7 @@ function normalizeChoices(choices) {
   });
 }
 
+// Delete `n` number of lines
 function cleanLine(n) {
   n || (n = 1);
   charm.erase("line");
@@ -168,18 +180,18 @@ _cli.confirm = function(question, cb) {
   render();
 };
 
-
 /**
  * Public CLI helper interface
  * @param  {array}   questions  Questions settings array
  * @param  {Function} cb        Callback being passed the user answers
  * @return {null}
  */
-cli.questionPrompt = function prompt(questions, allDone) {
+cli.questionPrompt = function(questions, allDone) {
 
   var rl = readline.createInterface(process.stdin, process.stdout);
   var answers = {};
 
+  // Propate current readline events to the global façade
   process.stdin.on("keypress", function(s, key) {
     rlVent.emit("keypress", s, key);
   });
@@ -191,13 +203,13 @@ cli.questionPrompt = function prompt(questions, allDone) {
   async.mapSeries(questions,
     // Each question
     function(question, done) {
-      // Callback to save answer
-      var after = function(answer) {
+      // Callback to save answer and continu to next question
+      function after(answer) {
         answers[question.name] = answer;
         done(null, answer);
       };
 
-      console.log();
+      console.log(); // write line return
 
       if (_.isFunction(_cli[question.type])) {
         _cli[question.type](question, after);
@@ -208,8 +220,10 @@ cli.questionPrompt = function prompt(questions, allDone) {
     // After all questions
     function() {
       rl.close();
-      if (!_.isFunction(allDone)) { return; }
-      allDone(answers);
+      rlVent.removeAllListeners(); // just little memory leaks prevention
+      if (_.isFunction(allDone)) {
+        allDone(answers);
+      }
     }
   );
 };
