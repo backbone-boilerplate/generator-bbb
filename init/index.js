@@ -64,8 +64,8 @@ Generator.prototype.askFor = function askFor() {
   var prompts = [];
 
   (!this.bbb.name || force) && prompts.push({
-    name    : "name",
     type    : "input",
+    name    : "name",
     message : "Your project name",
     default : this.appname // Default to current folder name
   });
@@ -74,21 +74,24 @@ Generator.prototype.askFor = function askFor() {
     name    : "testFramework",
     type    : "list",
     message : "Which test framework do you want to use?",
-    choices : [ "QUnit", "Mocha", "Jasmine" ]
+    choices : [ "QUnit", "Mocha", "Jasmine" ],
+    filter  : String.prototype.toLowerCase
   });
 
   (!this.bbb.moduleStyle || force) && prompts.push({
     name    : "moduleStyle",
     type    : "list",
     message : "Choose your module style",
-    choices : [ "AMD", "CommonJs" ]
+    choices : [ "AMD", "CommonJs" ],
+    filter  : String.prototype.toLowerCase
   });
 
   (!this.bbb.templateEngine || force) && prompts.push({
     name    : "templateEngine",
     type    : "list",
     message : "Choose your template engine",
-    choices : [ "Underscore", "Handlebars" ]
+    choices : [ "Underscore", "Handlebars" ],
+    filter  : String.prototype.toLowerCase
   });
 
   (!this.bbb.indent || force) && prompts.push({
@@ -107,7 +110,7 @@ Generator.prototype.askFor = function askFor() {
     }]
   });
 
-  this.questionPrompt(prompts, function (props) {
+  this.prompt(prompts, function (props) {
 
     _.extend(this.bbb, props);
     this.pkg.name = this.bbb.name;

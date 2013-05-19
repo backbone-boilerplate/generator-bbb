@@ -10,7 +10,7 @@ var _ = require("lodash");
 var grunt = require("grunt");
 var esprima = require("esprima");
 var escodegen = require("escodegen");
-var cli = require("./cli");
+var inquirer = require("inquirer");
 
 /**
  * Module exports
@@ -65,9 +65,6 @@ function Generator(args, options, config) {
       return gruntFunc.apply(grunt.file, args);
     }.bind(this);
   }, this);
-
-  // Extend BBB cli
-  _.assign(this, cli);
 
   // Get existing configurations
   var packageJSON;
@@ -132,4 +129,12 @@ Generator.prototype.jamInstall = function() {
     args : ["upgrade"],
     opts : { stdio: "inherit" }
   }, function() {});
+};
+
+/**
+ * Use `inquirer` prompt by default
+ * @return {null}
+ */
+Generator.prototype.prompt = function() {
+  inquirer.prompt.apply(inquirer, arguments);
 };
