@@ -16,7 +16,7 @@ var InitGenerator = require("../init/index");
  */
 
 module.exports = Generator;
-Generator._name = "bbb";
+Generator._name = "bbb:app";
 
 /**
  * BBB Generator constructor

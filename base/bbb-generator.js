@@ -17,7 +17,7 @@ var inquirer = require("inquirer");
  */
 
 module.exports = Generator;
-Generator.name = "bbb";
+Generator._name = "bbb";
 
 /**
  * BBB Generator base constructor
@@ -27,6 +27,15 @@ Generator.name = "bbb";
 function Generator(args, options, config) {
   var self = this;
   yeoman.generators.Base.apply(this, arguments);
+
+  // Check parents directory recursively for a config file (only if we're not in bbb:init)
+  if (this.constructor._name !== "bbb:init") {
+    var root = grunt.file.findup(".bbb-rc.json");
+    if (root) {
+      root = path.dirname(root);
+      process.chdir(root);
+    }
+  }
 
   // Set default paths
   this.destinationRoot(process.cwd());
