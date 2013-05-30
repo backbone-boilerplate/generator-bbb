@@ -75,7 +75,7 @@ Generator.prototype.askFor = function askFor() {
     type    : "list",
     message : "Which test framework do you want to use?",
     choices : [ "QUnit", "Mocha", "Jasmine" ],
-    filter  : String.prototype.toLowerCase
+    filter  : function(v) { return v.toLowerCase(); }
   });
 
   (!this.bbb.moduleStyle || force) && prompts.push({
@@ -83,7 +83,7 @@ Generator.prototype.askFor = function askFor() {
     type    : "list",
     message : "Choose your module style",
     choices : [ "AMD", "CommonJs" ],
-    filter  : String.prototype.toLowerCase
+    filter  : function(v) { return v.toLowerCase(); }
   });
 
   (!this.bbb.templateEngine || force) && prompts.push({
@@ -91,7 +91,7 @@ Generator.prototype.askFor = function askFor() {
     type    : "list",
     message : "Choose your template engine",
     choices : [ "Underscore", "Handlebars" ],
-    filter  : String.prototype.toLowerCase
+    filter  : function(v) { return v.toLowerCase(); }
   });
 
   (!this.bbb.indent || force) && prompts.push({
