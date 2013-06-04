@@ -100,18 +100,26 @@ Generator.prototype.askFor = function askFor() {
     message: "What about indentation?",
     choices: [{
       name: "Spaces (2)",
-      value: "  "
+      value: {
+        char : "space",
+        size : 2
+      }
     }, {
       name: "Spaces (4)",
-      value: "    "
+      value: {
+        char : "space",
+        size : 4
+      }
     }, {
       name: "Tabs",
-      value: "  "
+      value: {
+        char : "tab",
+        size : 1
+      }
     }]
   });
 
   this.prompt(prompts, function (props) {
-
     _.extend(this.bbb, props);
     this.pkg.name = this.bbb.name;
 

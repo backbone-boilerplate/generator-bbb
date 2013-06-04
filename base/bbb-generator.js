@@ -8,8 +8,7 @@ var path = require("path");
 var yeoman = require("yeoman-generator");
 var _ = require("lodash");
 var grunt = require("grunt");
-var esprima = require("esprima");
-var escodegen = require("escodegen");
+var beautify = require("js-beautify").js_beautify;
 var inquirer = require("inquirer");
 
 
@@ -103,7 +102,13 @@ util.inherits(Generator, yeoman.generators.Base);
 
 Generator.prototype.normalizeJSON = function(obj) {
   if (!_.isObject(obj)) { throw new Error("normalizeJSON take an object"); }
-  return JSON.stringify(obj, null, this.bbb.indent);
+  var qte = this.bbb.indent.size || 1;
+  var indentChar = (this.bbb.indent.char === "space") ? " " : "\t";
+  var indent = "";
+  while (qte--) {
+    indent += indentChar;
+  }
+  return JSON.stringify(obj, null, indent);
 };
 
 
@@ -115,27 +120,15 @@ Generator.prototype.normalizeJSON = function(obj) {
  */
 
 Generator.prototype.normalizeJS = function(code) {
-  var syntax;
-  var output;
-  try {
-    syntax = esprima.parse(code, { raw: true, tokens: true, range: true, comment: true });
-    syntax = escodegen.attachComments(syntax, syntax.comments, syntax.tokens);
-    output = escodegen.generate(syntax, {
-      comment: true,
-      format: {
-        indent: {
-          style: this.bbb.indent
-        },
-        quotes: "double"
-      },
-    });
-  } catch(e) {
-    output = code;
-    grunt.log.warn("Unable to parse invalid javascript file. Skipping " +
-        "whitespace normalization.");
-  }
 
-  return output;
+  return beautify(code.toString(), {
+    "indent_size"               : this.bbb.indent.size,
+    "indent_char"               : this.bbb.indent.char === "space" ? " " : "\t",
+    "indent_with_tabs"          : this.bbb.indent.char === "space" ? false : true,
+    "keep_array_indentation"    : true,
+    "keep_function_indentation" : true,
+    "space_before_conditional"  : true
+  });
 };
 
 
