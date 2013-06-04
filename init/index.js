@@ -5,6 +5,7 @@
 
 "use strict";
 var util = require("util");
+var path = require("path");
 var _ = require("lodash");
 var grunt = require("grunt");
 var BBBGenerator = require("../base/bbb-generator");
@@ -49,17 +50,7 @@ Generator.prototype.askFor = function askFor() {
 
   var force = (this.constructor._name === "bbb:init");
 
-  console.log(
-    "\n    .-~0~-." +
-    "\n   /   ___ \\ " +
-    "\n   |  ( _ )|       ~~ Backbone-Boilerplate ~~" +
-    "\n .-' (C) (C)`-  Welcome to the project generator" +
-    "\n   |   .---.           Have a good time!" +
-    "\n   |  / .-. \\ " +
-    "\n   |  \\ `-' / " +
-    "\n   |   `---'" +
-    "\n __|_______|___ \n"
-  );
+  console.log(grunt.file.read(path.join(__dirname, "../ascii.txt")));
 
   var prompts = [];
 
