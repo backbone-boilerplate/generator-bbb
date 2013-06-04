@@ -5,9 +5,11 @@
 
 "use strict";
 var util = require("util");
+var path = require("path");
 var _ = require("lodash");
 var grunt = require("grunt");
 var BBBGenerator = require("../base/bbb-generator");
+
 
 /**
  * Module exports
@@ -15,6 +17,7 @@ var BBBGenerator = require("../base/bbb-generator");
 
 module.exports = Generator;
 Generator._name = "bbb:module";
+
 
 /**
  * BBB Generator constructor
@@ -49,11 +52,22 @@ Generator.prototype.module = function module() {
   this.write("app/modules/" + this.moduleName + ".js", output);
 };
 
+
 /**
  * Generate the module related base test
  */
 
 Generator.prototype.moduleTest = function moduleTest() {
-  var dest = "test/" + this.bbb.testFramework + "/tests/" + this.moduleName + "js";
-  this.dest.write(dest, "");
+
+  var testFW = this.bbb.testFramework;
+  var specFolder = (testFW === "jasmine") ? "spec" : "tests";
+  var dest = path.join("test", testFW, specFolder, this.moduleName + ".js");
+
+  var srcText = this.src.read("test." + testFW + ".js");
+  var script = _.template(srcText)({
+    moduleName : this.moduleName,
+    modulePath : "app/modules/" + this.moduleName
+  });
+
+  this.dest.write(dest, this.normalizeJS(script));
 };

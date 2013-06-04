@@ -12,12 +12,14 @@ var esprima = require("esprima");
 var escodegen = require("escodegen");
 var inquirer = require("inquirer");
 
+
 /**
  * Module exports
  */
 
 module.exports = Generator;
 Generator._name = "bbb";
+
 
 /**
  * BBB Generator base constructor
@@ -92,15 +94,18 @@ function Generator(args, options, config) {
 
 util.inherits(Generator, yeoman.generators.Base);
 
+
 /**
  * Stringify an object and normalize whitespace with project preferences.
  * @param  {object} obj Raw object containing valid JSON value (no functions)
  * @return {string}     JSON stringified object with normalized whitespace
  */
+
 Generator.prototype.normalizeJSON = function(obj) {
   if (!_.isObject(obj)) { throw new Error("normalizeJSON take an object"); }
   return JSON.stringify(obj, null, this.bbb.indent);
 };
+
 
 /**
  * Normalize a JavaScript code string with project settings
@@ -108,6 +113,7 @@ Generator.prototype.normalizeJSON = function(obj) {
  * @param  {String} code JavaScript code contained in a String
  * @return {String}      Normalized JavaScript code (whitespace)
  */
+
 Generator.prototype.normalizeJS = function(code) {
   var syntax;
   var output;
@@ -132,6 +138,7 @@ Generator.prototype.normalizeJS = function(code) {
   return output;
 };
 
+
 Generator.prototype.jamInstall = function() {
   grunt.util.spawn({
     cmd  : "jam",
@@ -140,10 +147,12 @@ Generator.prototype.jamInstall = function() {
   }, function() {});
 };
 
+
 /**
  * Use `inquirer` prompt by default
  * @return {null}
  */
+
 Generator.prototype.prompt = function() {
   inquirer.prompt.apply(inquirer, arguments);
 };
