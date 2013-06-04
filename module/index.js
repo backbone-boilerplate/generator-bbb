@@ -61,7 +61,8 @@ Generator.prototype.moduleTest = function moduleTest() {
 
   var testFW = this.bbb.testFramework;
   var specFolder = (testFW === "jasmine") ? "spec" : "tests";
-  var dest = path.join("test", testFW, specFolder, this.moduleName + ".js");
+  var ext = (testFW === "jasmine") ? ".spec.js" : ".js";
+  var dest = path.join("test", testFW, specFolder, this.moduleName + ext);
 
   var srcText = this.src.read("test." + testFW + ".js");
   var script = _.template(srcText)({
