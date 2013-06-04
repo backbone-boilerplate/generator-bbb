@@ -76,6 +76,10 @@ function Generator(args, options, config) {
     }.bind(this);
   }, this);
 
+  // `write` and `copy` are specials as they should check for collision before
+  this.dest.write = _.bind(this.write, this);
+  this.dest.copy  = _.bind(this.copy, this);
+
   // Get existing configurations
   var packageJSON;
   try {
