@@ -65,12 +65,11 @@ Generator.prototype.saveConfig = InitGenerator.prototype.saveConfig;
  */
 
 Generator.prototype.app = function app() {
-  var self = this;
-  this.mkdir("vendor");
+  this.dest.mkdir(path.join(this.bbb.paths.base, "vendor"));
 
   this.src.recurse("app", function( abspath, rootdir, subdir, filename ) {
     var code = grunt.file.read(abspath);
-    var dest = path.join("app", filename);
+    var dest = path.join(this.bbb.paths.base, "app", filename);
 
     // Manage app.js elsewhere
     if (filename === "app.js") {
@@ -78,19 +77,19 @@ Generator.prototype.app = function app() {
     }
 
     if (abspath.slice(-3) === ".js") {
-      code = self.normalizeJS(code);
+      code = this.normalizeJS(code);
     }
 
     if (subdir != null) {
-      dest = path.join("app", subdir, filename);
+      dest = path.join(this.bbb.paths.base, "app", subdir, filename);
     }
 
-    self.dest.write(dest, code);
-  });
+    this.dest.write(dest, code);
+  }.bind(this));
 
   this.dest.write("README.md", "");
-  this.copy("index.html", "index.html");
-  this.copy("favicon.ico", "favicon.ico");
+  this.dest.copy("index.html", path.join(this.bbb.paths.base, "index.html"));
+  this.dest.copy("favicon.ico", path.join(this.bbb.paths.base, "favicon.ico"));
 };
 
 /**
@@ -120,7 +119,7 @@ Generator.prototype.genAppJs = function genAppJs() {
     });
   }
 
-  this.dest.write("app/app.js", this.normalizeJS(appFile));
+  this.dest.write(path.join(this.bbb.paths.base, "app/app.js"), this.normalizeJS(appFile));
 };
 
 /**
@@ -178,7 +177,8 @@ Generator.prototype.genGruntfile = function genGruntfile() {
  */
 
 Generator.prototype.testScaffholding = function testScaffholding() {
-  this.directory("test/"+ this.bbb.testFramework, "test/"+ this.bbb.testFramework, true);
+  this.directory(path.join(this.bbb.paths.base, "test/"+ this.bbb.testFramework),
+      "test/"+ this.bbb.testFramework, true);
 };
 
 /**

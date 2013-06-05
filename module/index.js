@@ -49,7 +49,7 @@ Generator.prototype.module = function module() {
   }
 
   var output = this.normalizeJS(this.src.read("module." + this.bbb.moduleStyle + ".js"));
-  this.write("app/modules/" + this.moduleName + ".js", output);
+  this.write(path.join(this.bbb.paths.base, this.bbb.paths.modules, this.moduleName + ".js"), output);
 };
 
 
@@ -62,7 +62,7 @@ Generator.prototype.moduleTest = function moduleTest() {
   var testFW = this.bbb.testFramework;
   var specFolder = (testFW === "jasmine") ? "spec" : "tests";
   var ext = (testFW === "jasmine") ? ".spec.js" : ".js";
-  var dest = path.join("test", testFW, specFolder, this.moduleName + ext);
+  var dest = path.join(this.bbb.paths.base, this.bbb.paths.tests, testFW, specFolder, this.moduleName + ext);
 
   var srcText = this.src.read("test." + testFW + ".js");
   var script = _.template(srcText)({

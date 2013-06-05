@@ -48,8 +48,9 @@ util.inherits(Generator, BBBGenerator);
 Generator.prototype.askFor = function askFor() {
   var done = this.async();
 
-  var force = (this.constructor._name === "bbb:init");
+  var force = (this.constructor._name === "bbb:init") || grunt.file.isFile(".bbb-rc.json");
 
+  // Display the BBB ASCII
   console.log(grunt.file.read(path.join(__dirname, "../ascii.txt")));
 
   var prompts = [];

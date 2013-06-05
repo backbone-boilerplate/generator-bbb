@@ -91,7 +91,13 @@ function Generator(args, options, config) {
   } catch(e) { bbbrc = {}; }
 
   this.pkg = packageJSON;
-  this.bbb = bbbrc;
+  this.bbb = _.defaults(bbbrc, {
+    paths: {
+      base    : ".",
+      tests   : "test",
+      modules : "app/modules"
+    }
+  });
 
 }
 
