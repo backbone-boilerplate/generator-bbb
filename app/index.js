@@ -131,6 +131,7 @@ Generator.prototype.genPackageManager = function genPackageManager() {
   var comp = this.src.readJSON("component.json");
   this.dest.write("component.json", this.normalizeJSON(comp));
   var bowerrc = this.src.readJSON(".bowerrc");
+  bowerrc.directory = path.join(this.bbb.paths.base, bowerrc.directory).replace(/\\\\/g, "/");
   this.dest.write(".bowerrc", this.normalizeJSON(bowerrc));
 };
 
@@ -201,6 +202,8 @@ Generator.prototype.genPackageJSON = function genPackageJSON() {
   if (this.bbb.templateEngine === "handlebars") {
     this.pkg.jam.dependencies.handlebars = "1.0.0-beta.6.jam.1";
   }
+
+  this.pkg.jam.packageDir = path.join(this.bbb.paths.base, this.pkg.jam.packageDir).replace(/\\\\/g, "/");
 
   this.dest.write("package.json", this.normalizeJSON(this.pkg));
 };
