@@ -28,6 +28,16 @@ function Generator(args, options, config) {
   BBBGenerator.apply(this, arguments);
 
   this.moduleName = args[0];
+
+  // Make sure requirement to process this command are met. Fail otherwise.
+  if (!grunt.file.isFile(path.join(this.destinationRoot(), ".bbb-rc.json"))) {
+    grunt.fail.warn("You must init your project first");
+    return;
+  }
+  if (!this.moduleName) {
+    grunt.fail.warn("You must provide a name for your module");
+    return;
+  }
 }
 
 util.inherits(Generator, BBBGenerator);
@@ -38,16 +48,6 @@ util.inherits(Generator, BBBGenerator);
  */
 
 Generator.prototype.module = function module() {
-
-  if (!this.bbb) {
-    grunt.log.error("You must init your project first");
-    return;
-  }
-  if (!this.moduleName) {
-    grunt.log.error("You must provide a name for your module");
-    return;
-  }
-
   var output = this.normalizeJS(this.src.read("module." + this.bbb.moduleStyle + ".js"));
   this.write(path.join(this.bbb.paths.base, this.bbb.paths.modules, this.moduleName + ".js"), output);
 };

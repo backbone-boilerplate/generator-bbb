@@ -92,7 +92,15 @@ function Generator(args, options, config) {
 
   this.pkg = packageJSON;
   this.bbb = _.defaults(bbbrc, {
-    paths: {
+    name           : "",
+    testFramework  : "qunit",
+    moduleStyle    : "amd",
+    templateEngine : "underscore",
+    indent         : {
+      char : "space",
+      size : 2
+    },
+    paths          : {
       base    : ".",
       tests   : "test",
       modules : "app/modules"
