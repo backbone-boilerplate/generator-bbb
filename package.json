@@ -23,7 +23,7 @@
     "test": "mocha"
   },
   "dependencies": {
-    "yeoman-generator": "~0.11.2",
+    "yeoman-generator": "~0.11.4",
     "falafel": "0.2.0",
     "lodash": "~1.2.1",
     "grunt": "~0.4.1",
