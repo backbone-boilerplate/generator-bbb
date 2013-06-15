@@ -9,7 +9,6 @@ var yeoman = require("yeoman-generator");
 var _ = require("lodash");
 var grunt = require("grunt");
 var beautify = require("js-beautify").js_beautify;
-var inquirer = require("inquirer");
 
 
 /**
@@ -156,14 +155,4 @@ Generator.prototype.jamInstall = function() {
     args : ["upgrade"],
     opts : { stdio: "inherit" }
   }, function() {});
-};
-
-
-/**
- * Use `inquirer` prompt by default
- * @return {null}
- */
-
-Generator.prototype.prompt = function() {
-  inquirer.prompt.apply(inquirer, arguments);
 };
