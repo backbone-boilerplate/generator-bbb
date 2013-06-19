@@ -80,6 +80,10 @@ Generator.prototype.app = function app() {
       code = this.normalizeJS(code);
     }
 
+    if (abspath.slice(-5) === ".html") {
+      code = this.normalizeHTML(code);
+    }
+
     if (subdir != null) {
       dest = path.join(this.bbb.paths.base, "app", subdir, filename);
     }
@@ -88,7 +92,7 @@ Generator.prototype.app = function app() {
   }.bind(this));
 
   this.dest.write("README.md", "");
-  this.dest.copy("index.html", path.join(this.bbb.paths.base, "index.html"));
+  this.dest.write("index.html", this.normalizeHTML(this.src.read("index.html")));
   this.dest.copy("favicon.ico", path.join(this.bbb.paths.base, "favicon.ico"));
 };
 
@@ -185,6 +189,10 @@ Generator.prototype.testScaffholding = function testScaffholding() {
 
     if (abspath.slice(-3) === ".js") {
       code = this.normalizeJS(code);
+    }
+
+    if (abspath.slice(-5) === ".html") {
+      code = this.normalizeHTML(code);
     }
 
     if (subdir != null) {

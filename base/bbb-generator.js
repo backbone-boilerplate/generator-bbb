@@ -8,7 +8,7 @@ var path = require("path");
 var yeoman = require("yeoman-generator");
 var _ = require("lodash");
 var grunt = require("grunt");
-var beautify = require("js-beautify").js_beautify;
+var beautify = require("js-beautify");
 
 
 /**
@@ -133,12 +133,11 @@ Generator.prototype.normalizeJSON = function(obj) {
  * Normalize a JavaScript code string with project settings
  * TODO: Enhance with style guide support
  * @param  {String} code JavaScript code contained in a String
- * @return {String}      Normalized JavaScript code (whitespace)
+ * @return {String}      Normalized JavaScript code
  */
 
 Generator.prototype.normalizeJS = function(code) {
-
-  return beautify(code.toString(), {
+  return beautify.js_beautify(code.toString(), {
     "indent_size"               : this.bbb.indent.size,
     "indent_char"               : this.bbb.indent.char === "space" ? " " : "\t",
     "indent_with_tabs"          : this.bbb.indent.char === "space" ? false : true,
@@ -147,6 +146,22 @@ Generator.prototype.normalizeJS = function(code) {
     "space_before_conditional"  : true,
     "preserve_newlines"         : true,
     "break_chained_methods"     : false
+  });
+};
+
+
+/**
+ * Normalize a HTML code string with project settings
+ * @param  {String} code HTML code contained in a String
+ * @return {String}      Normalized HTML code
+ */
+
+Generator.prototype.normalizeHTML = function(code) {
+  return beautify.html(code.toString(), {
+    "indent_size"       : this.bbb.indent.size,
+    "indent_char"       : this.bbb.indent.char === "space" ? " " : "\t",
+    "preserve_newlines" : true,
+    "wrap_line_length"  : 0
   });
 };
 
