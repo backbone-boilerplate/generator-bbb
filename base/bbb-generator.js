@@ -144,7 +144,9 @@ Generator.prototype.normalizeJS = function(code) {
     "indent_with_tabs"          : this.bbb.indent.char === "space" ? false : true,
     "keep_array_indentation"    : true,
     "keep_function_indentation" : true,
-    "space_before_conditional"  : true
+    "space_before_conditional"  : true,
+    "preserve_newlines"         : true,
+    "break_chained_methods"     : false
   });
 };
 

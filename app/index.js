@@ -178,8 +178,21 @@ Generator.prototype.genGruntfile = function genGruntfile() {
  */
 
 Generator.prototype.testScaffholding = function testScaffholding() {
-  this.directory(path.join(this.bbb.paths.base, "test/"+ this.bbb.testFramework),
-      "test/"+ this.bbb.testFramework, true);
+  var root = "test/" + this.bbb.testFramework;
+  this.src.recurse(root, function( abspath, rootdir, subdir, filename ) {
+    var code = grunt.file.read(abspath);
+    var dest = path.join(this.bbb.paths.base, root, filename);
+
+    if (abspath.slice(-3) === ".js") {
+      code = this.normalizeJS(code);
+    }
+
+    if (subdir != null) {
+      dest = path.join(this.bbb.paths.base, root, subdir, filename);
+    }
+
+    this.dest.write(dest, code);
+  }.bind(this));
 };
 
 /**
