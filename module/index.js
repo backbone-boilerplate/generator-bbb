@@ -9,6 +9,7 @@ var path = require("path");
 var _ = require("lodash");
 var grunt = require("grunt");
 var BBBGenerator = require("../base/bbb-generator");
+var falafel = require("falafel");
 
 
 /**
@@ -60,9 +61,16 @@ Generator.prototype.module = function module() {
 Generator.prototype.moduleTest = function moduleTest() {
 
   var testFW = this.bbb.testFramework;
+
+  if (!testFW || testFW === "none") return;
+
+  // Create test file
+  var testFolder = path.join(this.bbb.paths.base, this.bbb.paths.tests, testFW);
   var specFolder = (testFW === "jasmine") ? "spec" : "tests";
+  var testRunnerPath = path.join(testFolder, "test-runner.js");
   var ext = (testFW === "jasmine") ? ".spec.js" : ".js";
-  var dest = path.join(this.bbb.paths.base, this.bbb.paths.tests, testFW, specFolder, this.moduleName + ext);
+  var dest = path.join(this.bbb.paths.base, this.bbb.paths.tests, testFW,
+      specFolder, this.moduleName + ext);
 
   var srcText = this.src.read("test." + testFW + ".js");
   var script = _.template(srcText)({
@@ -71,4 +79,21 @@ Generator.prototype.moduleTest = function moduleTest() {
   });
 
   this.dest.write(dest, this.normalizeJS(script));
+
+  // Add test file to the karma conf
+  var testRunner = this.dest.read(testRunnerPath);
+
+  var runnerContent = falafel(testRunner, function(node) {
+    /*jshint evil:true */
+    if (node.type === "ArrayExpression" &&
+        node.parent && node.parent.type === "VariableDeclarator" &&
+        (node.parent.id.name === "tests" || node.parent.id.name === "specs")) {
+      var tests = eval(node.source()); // eval to ignore comments
+      tests.push(specFolder + "/" + this.moduleName + ext);
+      node.update(this.normalizeJSON(tests));
+    }
+  }.bind(this));
+
+  this.dest.write(path.join(testFolder, "test-runner.js"),
+      this.normalizeJS(runnerContent));
 };
