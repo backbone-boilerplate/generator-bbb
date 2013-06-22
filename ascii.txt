@@ -1,8 +1,8 @@
    .-~0~-.
   /   ___ \
-  |  ( _ )|       ~~ Backbone-Boilerplate ~~
-.-' (C) (C)`-  Welcome to the project generator
-  |   .---.           Have a good time!
+  |  ( _ )|             ~~ Backbone-Boilerplate ~~
+.-' (C) (C)`-   A set of best practices and utilities for
+  |   .---.        building Backbone.js applications.
   |  / .-. \
   |  \ `-' /
   |   `---'

@@ -1,14 +1,14 @@
 {
   "name": "generator-bbb",
-  "version": "0.0.0",
-  "description": "The Backbone Boilerplate generator for yeoman",
+  "version": "0.1.0-pre",
+  "description": "Backbone Boilerplate Yeoman generator.",
   "keywords": [
     "yeoman-generator",
     "backbone-boilerplate",
     "backbone"
   ],
-  "homepage": "https://github.com/SBoudrias/generator-bbb",
-  "bugs": "https://github.com/SBoudrias/generator-bbb/issues",
+  "homepage": "https://github.com/backbone-boilerplate/generator-bbb",
+  "bugs": "https://github.com/backbone-boilerplate/generator-bbb/issues",
   "author": {
     "name": "Simon Boudrias",
     "email": "admin@simonboudrias.com",
@@ -17,29 +17,27 @@
   "main": "app/index.js",
   "repository": {
     "type": "git",
-    "url": "https://github.com/SBoudrias/generator.git"
+    "url": "https://github.com/backbone-boilerplate/generator-bbb.git"
   },
   "scripts": {
     "test": "mocha"
   },
   "dependencies": {
     "yeoman-generator": "~0.12.0",
-    "falafel": "0.2.0",
-    "lodash": "~1.2.1",
+    "falafel": "~0.2.1",
+    "lodash": "~1.3.1",
     "grunt": "~0.4.1",
-    "backbone-boilerplate": "git://github.com/tbranyen/backbone-boilerplate.git#wip",
-    "async": "~0.2.8",
+    "backbone-boilerplate": "git://github.com/backbone-boilerplate/backbone-boilerplate.git#wip",
+    "async": "~0.2.9",
     "js-beautify": "~1.4.0"
   },
   "devDependencies": {
-    "mocha": "~1.9.0"
+    "mocha": "~1.11.0"
   },
   "engines": {
     "node": ">=0.8.0"
   },
-  "licenses": [
-    {
-      "type": "MIT"
-    }
-  ]
+  "licenses": [{
+    "type": "MIT"
+  }]
 }
