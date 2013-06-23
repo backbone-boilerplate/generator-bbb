@@ -9,28 +9,29 @@ structure. It can also create basic modules files and automatically link them to
 unit test files. A generator will help you being more productive and automize repetitive
 scaffholding tasks.
 
-**Project stage**: This is early alpha functionnalities. The generator is not yet published
-on NPM; it's only [usable if installed manually](#developpement).
-
 
 Installation
 ------------------------------
 
 - Make sure you have [yo](https://github.com/yeoman/yo) installed:
     `npm install -g yo`
-- Install the generator: `npm install generator-bbb` (This generator is not yet on NPM)
+- Install the generator: `npm install -g generator-bbb@0.2`
+
+Note that the generator can also be installed locally if you want to keep different versions
+on different project.
 
 ### Starting from Scratch? (`bbb:app`)
 
-Run `yo bbb` to start the default scaffholding
+Run `yo bbb myApp/` to start the default scaffolding.
 
-You can also assign a `path` option if you don't want to initialize BBB in the current
-working directory; e.g. `yo bbb subfolder/myapp` (note: the path can also be absolute)
+The `path` parameter is optionnal and will default to the current working directory. The
+path can be absolute.
+
 
 ### Include in an existing project and advanced use (`bbb:init`)
 
-Run `yo bbb:init` to initialize the generator configuration. This will allow you to use
-the generator on an existing project.
+Run `yo bbb:init` to initialize the generator configuration. This can allow you to use
+the generator on an existing project., or to [manually edit the configuration file](#advanced-configuration) before scaffolding the full app.
 
 ### Create module (`bbb:app`)
 
@@ -53,7 +54,7 @@ these manually for now - full built-in support should come sometime in the futur
 Developpement
 ------------------------------
 
-### Installation
+### Install a developpement version
 
 In order to work with the developpement version, you'll need to use [`npm-link` functionnality](https://npmjs.org/doc/link.html).
 
