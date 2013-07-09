@@ -1,6 +1,6 @@
 {
   "name": "generator-bbb",
-  "version": "0.2.0-rc.2",
+  "version": "0.2.0-rc.3",
   "description": "Backbone Boilerplate Yeoman generator.",
   "keywords": [
     "yeoman-generator",
