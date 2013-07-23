@@ -13,12 +13,14 @@ scaffholding tasks.
 Installation
 ------------------------------
 
-- Make sure you have [yo](https://github.com/yeoman/yo) installed:
-    `npm install -g yo`
 - Install the generator: `npm install -g generator-bbb@0.2`
 
 Note that the generator can also be installed locally if you want to keep different versions
 on different project.
+
+_Peer dependencies_: When installing the generator, NPM should install other global dependencies
+used by the Boilerplate. If for some reason this didn't work, you can run this command:
+`npm install -g yo bower grunt-cli jamjs`.
 
 ### Starting from Scratch? (`bbb:app`)
 

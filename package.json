@@ -35,14 +35,14 @@
     "mocha": "~1.11.0"
   },
   "peerDepenencies": {
-    "grunt-cli": "0.4.x",
-    "bower": "0.x",
-    "jamjs": "0.x",
-    "karma": "0.x",
-    "yo": ">= 0.x < 2"
+    "grunt-cli": "*",
+    "bower": "*",
+    "jamjs": "*",
+    "yo": "*"
   },
   "engines": {
-    "node": ">=0.8.0"
+    "node": ">=0.8.0",
+    "npm": ">=1.2.10"
   },
   "licenses": [{
     "type": "MIT"
