@@ -23,22 +23,34 @@ _Peer dependencies_: When installing the generator, NPM should install other
 global dependencies used by the Boilerplate. If for some reason this didn't
 work, you can run this command: `npm install -g yo grunt-cli bower jamjs`.
 
-### `bbb:app` Starting from Scratch. ###
+### Starting from Scratch. ###
 
-Run `yo bbb myApp/` to start the default scaffolding.
+``` bash
+yo bbb:app <path>
+```
 
-The `path` parameter is optionnal and will default to the current working
+Scaffolds out a new Backbone Boilerplate application.
+
+The `path` parameter is optional and will default to the current working
 directory. The path can be absolute.
 
-### `bbb:init` Include in an existing project. ###
+### Include in an existing project. ###
 
-Run `yo bbb:init` to initialize the generator configuration. This can allow you
-to use the generator on an existing project or to [manually edit the
-configuration file](#advanced-configuration) before scaffolding the full app.
+``` bash
+yo bbb:init
+```
 
-### `bbb:module` Create module. ###
+Initializes the generator configuration. This can allow you to use the
+generator on an existing project or to [manually edit the configuration
+file](#advanced-configuration) before scaffolding the full app.
 
-Run `yo bbb:module <name>` to create a single module and its related test.
+### Create module. ###
+
+``` bash
+yo bbb:module <name>
+```
+
+Creates a single module and its related test.
 
 If needed, you can specify a sub-directory too: `yo bbb:module views/list-item`
 
