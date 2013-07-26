@@ -1,4 +1,4 @@
-BBB Generator [![Build Status](https://secure.travis-ci.org/SBoudrias/generator.png?branch=master)](https://travis-ci.org/backbone-boilerplate/generator)
+BBB Generator [![Build Status](https://secure.travis-ci.org/backbone-boilerplate/generator-bbb.png?branch=master)](https://travis-ci.org/backbone-boilerplate/generator-bbb)
 ====================================================================
 
 The Backbone-Boilerplate generator working on top of Yeoman.
