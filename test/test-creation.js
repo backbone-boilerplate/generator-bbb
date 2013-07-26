@@ -40,4 +40,16 @@ describe("bbb generator", function () {
       done();
     });
   });
+
+  it("can add Handlebars support", function( done ) {
+    helpers.mockPrompt(this.app, {
+      "templateEngine": "handlebars"
+    });
+
+    this.app.run({}, function () {
+      helpers.assertFile("app/app.js", /require\("handlebars"\);/g);
+      helpers.assertFile("app/app.js", /Handlebars\.compile/g);
+      done();
+    });
+  });
 });
