@@ -1,9 +1,9 @@
    .-~0~-.
   /   ___ \
   |  ( _ )|             ~~ Backbone-Boilerplate ~~
-.-' (C) (C)`-   A set of best practices and utilities for
-  |   .---.        building Backbone.js applications.
-  |  / .-. \
+.-' (C) (C)`-       
+  |   .---.         A workflow for building Backbone.js
+  |  / .-. \                  applications.
   |  \ `-' /
   |   `---'
 __|_______|___
