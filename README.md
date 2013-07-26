@@ -12,7 +12,9 @@ help you being more productive and automize repetitive scaffolding tasks.
 
 ## Installation ##
 
-- Install the generator: `npm install -gq generator-bbb@0.2`
+```bash
+npm install -gq generator-bbb@0.2
+```
 
 Note that the generator can also be installed locally if you want to keep
 different versions on different project.
