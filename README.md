@@ -65,8 +65,8 @@ In order to work with the development version, you'll need to use [`npm-link`
 functionality](https://npmjs.org/doc/link.html).
 
 ``` bash
-# Clone into a folder.
-git clone repo/generator-bbb.git .
+# Clone into a folder named `generator-bbb`.
+git clone https://github.com/backbone-boilerplate/generator-bbb.git
 
 # Change into it.
 cd generator-bbb
