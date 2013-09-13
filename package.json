@@ -14,7 +14,7 @@
     "email": "admin@simonboudrias.com",
     "url": "https://github.com/SBoudrias"
   },
-  "main": "app/index.js",
+  "main": "lib/generators/app/index.js",
   "repository": {
     "type": "git",
     "url": "https://github.com/backbone-boilerplate/generator-bbb.git"
