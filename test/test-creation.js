@@ -23,7 +23,6 @@ describe("bbb generator", function () {
   it("creates expected files", function (done) {
     var expected = [
       // add files you expect to exist here.
-      ".bbb-rc.json",
       ".bowerrc",
       "bower.json",
       "Gruntfile.js",
@@ -41,15 +40,4 @@ describe("bbb generator", function () {
     });
   });
 
-  it("can add Handlebars support", function( done ) {
-    helpers.mockPrompt(this.app, {
-      "templateEngine": "handlebars"
-    });
-
-    this.app.run({}, function () {
-      helpers.assertFile("app/app.js", /require\("handlebars"\);/g);
-      helpers.assertFile("app/app.js", /Handlebars\.compile/g);
-      done();
-    });
-  });
 });
