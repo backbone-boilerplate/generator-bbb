@@ -5,7 +5,7 @@ The Backbone-Boilerplate generator works with Yeoman.
 
 A generator is a tool that allow you to rapidly create files, modules and
 automatically set up relationships between them. For example, the BBB generator
-can scaffhold a complete project structure. It can also create basic module
+can scaffold a complete project structure. It can also create basic module
 files and automatically link them to related unit test files. A generator will
 help you being more productive and automize repetitive scaffolding tasks.
 
@@ -62,8 +62,8 @@ default one in your project by passing `--amd` or `--cjs` style.
 For advanced use, you can customize the paths where you hold your application.
 For this, just run `yo bbb:init` command, and then manually edit the generated
 `.yo-rc.json` configs under the `generator-bbb` namespace.  Some options in this
-file are not configured via the command line tool (for the sake of brievety).
-Once the manual edit is done, just run `yo bbb` to scaffhold the project.
+file are not configured via the command line tool (for the sake of brevity).
+Once the manual edit is done, just run `yo bbb` to scaffold the project.
 
 Please note that changing paths manually in the `.yo-rc.json` file won't
 update every config path in the multiple third party tools (e.g. Grunt, Bower,
