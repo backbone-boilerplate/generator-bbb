@@ -29,7 +29,8 @@
     "async": "~0.2.9",
     "js-beautify": "~1.4.0",
     "ast-query": "~0.1.0",
-    "file-utils": "~0.1.1"
+    "file-utils": "~0.1.1",
+    "js2coffee": "~0.2.3"
   },
   "devDependencies": {
     "bower": "~1.0.0",
