@@ -29,7 +29,11 @@ describe("bbb generator", function () {
       "index.html",
       "app/config.js",
       "app/app.js",
-      "app/main.js"
+      "app/main.js",
+      ".gitignore",
+      ".travis.yml",
+      ".editorconfig",
+      "package.json"
     ];
 
     helpers.mockPrompt(this.app);
