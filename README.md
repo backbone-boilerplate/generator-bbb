@@ -13,7 +13,7 @@ help you being more productive and automize repetitive scaffolding tasks.
 ## Installation ##
 
 ```bash
-npm install -gq generator-bbb@0.2
+npm install -gq generator-bbb
 ```
 
 Note that the generator can also be installed locally if you want to keep
@@ -21,18 +21,18 @@ different versions on different project.
 
 _Peer dependencies_: When installing the generator, NPM should install other
 global dependencies used by the Boilerplate. If for some reason this didn't
-work, you can run this command: `npm install -g yo grunt-cli bower jamjs`.
+work, you can run this command: `npm install -g yo grunt-cli bower`.
 
 ### Starting from Scratch. ###
 
 ``` bash
-yo bbb:app <path>
+yo bbb:app [path]
 ```
 
 Scaffolds out a new Backbone Boilerplate application.
 
 The `path` parameter is optional and will default to the current working
-directory. The path can be absolute.
+directory.
 
 ### Include in an existing project. ###
 
@@ -52,10 +52,7 @@ yo bbb:module <name>
 
 Creates a single module and its related test.
 
-If needed, you can specify a sub-directory too: `yo bbb:module views/list-item`
-
-You can also force the module style if you want to use another style than the
-default one in your project by passing `--amd` or `--cjs` style.
+If needed, name can specify a sub-directory too: `yo bbb:module views/list-item`
 
 ### Advanced configurations ###
 
@@ -66,9 +63,8 @@ file are not configured via the command line tool (for the sake of brevity).
 Once the manual edit is done, just run `yo bbb` to scaffold the project.
 
 Please note that changing paths manually in the `.yo-rc.json` file won't
-update every config path in the multiple third party tools (e.g. Grunt, Bower,
-Jam). You'll need to fix these manually for now - full built-in support should
-come sometime in the future.
+update every config path in the multiple third party tools (e.g. Grunt and Bower). You'll
+need to fix these manually for now - full built-in support should come sometime in the future.
 
 ## Development ##
 
@@ -83,9 +79,6 @@ git clone https://github.com/backbone-boilerplate/generator-bbb.git
 
 # Change into it.
 cd generator-bbb
-
-# Install the dependencies manually.
-npm install
 
 # Here you create a global link to `generator-bbb` which will be used by NPM.
 npm link
