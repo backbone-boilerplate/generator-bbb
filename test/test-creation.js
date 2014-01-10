@@ -1,43 +1,41 @@
-/*global describe, beforeEach, it*/
-"use strict";
-
 var path    = require("path");
 var helpers = require("yeoman-generator").test;
+var assert = require("yeoman-generator").assert;
 
+var defaultFiles = [
+  ".bowerrc",
+  ".gitignore",
+  ".yo-rc.json",
+  "bower.json",
+  "Gruntfile.js",
+  "index.html",
+  "package.json",
+  "README.md",
+  "app/app.js",
+  "app/config.js",
+  "app/main.js",
+  "app/router.js",
+  "test/runner.js"
+];
 
 describe("bbb generator", function () {
-  beforeEach(function (done) {
-    helpers.testDirectory(path.join(__dirname, "temp"), function (err) {
-      if (err) {
-        return done(err);
-      }
+  describe("with defaults settings", function () {
+    before(function (done) {
+      helpers.testDirectory(path.join(__dirname, "temp"), function() {
+        this.app = helpers.createGenerator("bbb:app", [
+          path.join(__dirname, "../lib/generators/app")
+        ]);
+        this.app.options["skip-install"] = true;
+        helpers.mockPrompt(this.app);
+        this.app.run({}, function () { done(); });
+      }.bind(this));
+    });
 
-      this.app = helpers.createGenerator("bbb:app", [
-        "../../lib/generators/app"
-      ]);
-      this.app.options["skip-install"] = true;
-      done();
-    }.bind(this));
-  });
-
-  it("creates expected files", function (done) {
-    var expected = [
-      // add files you expect to exist here.
-      ".bowerrc",
-      "bower.json",
-      "Gruntfile.js",
-      "index.html",
-      "app/config.js",
-      "app/app.js",
-      "app/main.js"
-    ];
-
-    helpers.mockPrompt(this.app);
-
-    this.app.run({}, function () {
-      helpers.assertFiles(expected);
-      done();
+    it("create expected files", function () {
+      assert.file(defaultFiles.concat([
+        "test/qunit/specs/example.spec.js",
+        "test/qunit/specs/boilerplate/router.spec.js"
+      ]));
     });
   });
-
 });
