@@ -68,4 +68,22 @@ describe("bbb generator", function () {
       assert.equal(pkg.name, "bbb-project");
     });
   });
+
+  describe("specifying a folder on the CLI", function () {
+    before(function (done) {
+      helpers.testDirectory(path.join(__dirname, "temp"), function() {
+        this.app = helpers.createGenerator("bbb:app", [
+          path.join(__dirname, "../lib/generators/app")
+        ], [ "subpath/" ]);
+        this.app.options["skip-install"] = true;
+        helpers.mockPrompt(this.app, { name: "bbb-project" });
+        this.app.run({}, function () { done(); });
+      }.bind(this));
+    });
+
+    it("scaffold project in the folder", function () {
+      assert.equal(path.basename(process.cwd()), "subpath");
+      assert.file(defaultFiles);
+    });
+  });
 });
