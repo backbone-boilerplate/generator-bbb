@@ -43,5 +43,8 @@
     {
       "type": "MIT"
     }
-  ]
+  ],
+  "devDependencies": {
+    "detect-indent": "~0.1.3"
+  }
 }
