@@ -1,5 +1,6 @@
 var path = require("path");
 var fs = require("fs");
+var child_process = require("child_process");
 var helpers = require("yeoman-generator").test;
 var assert = require("yeoman-generator").assert;
 var detectIndent = require("detect-indent");
@@ -20,7 +21,7 @@ var defaultFiles = [
   "test/runner.js"
 ];
 
-describe("bbb generator", function () {
+describe("bbb:app", function () {
   describe("with defaults settings", function () {
     before(function (done) {
       helpers.testDirectory(path.join(__dirname, "temp"), function() {
@@ -84,6 +85,64 @@ describe("bbb generator", function () {
     it("scaffold project in the folder", function () {
       assert.equal(path.basename(process.cwd()), "subpath");
       assert.file(defaultFiles);
+    });
+  });
+
+  describe("specifying custom indentation", function () {
+    before(function (done) {
+      helpers.testDirectory(path.join(__dirname, "temp"), function() {
+        this.app = helpers.createGenerator("bbb:app", [
+          path.join(__dirname, "../lib/generators/app")
+        ]);
+        this.app.options["skip-install"] = true;
+        helpers.mockPrompt(this.app, { indent: { style : "tab", size : 1 } });
+        this.app.run({}, function () { done(); });
+      }.bind(this));
+    });
+
+    it("indent files with 2 spaces", function () {
+      var file = fs.readFileSync("app/app.js", "utf8");
+      assert.equal(detectIndent(file), "\t");
+    });
+  });
+
+  describe("with testFramework: mocha", function () {
+    before(function (done) {
+      helpers.testDirectory(path.join(__dirname, "temp"), function() {
+        this.app = helpers.createGenerator("bbb:app", [
+          path.join(__dirname, "../lib/generators/app")
+        ]);
+        this.app.options["skip-install"] = true;
+        helpers.mockPrompt(this.app, { testFramework: "mocha" });
+        this.app.run({}, function () { done(); });
+      }.bind(this));
+    });
+
+    it("create expected files", function () {
+      assert.file([
+        "test/mocha/specs/example.spec.js",
+        "test/mocha/specs/boilerplate/router.spec.js"
+      ]);
+    });
+  });
+
+  describe("with testFramework: jasmine", function () {
+    before(function (done) {
+      helpers.testDirectory(path.join(__dirname, "temp"), function() {
+        this.app = helpers.createGenerator("bbb:app", [
+          path.join(__dirname, "../lib/generators/app")
+        ]);
+        this.app.options["skip-install"] = true;
+        helpers.mockPrompt(this.app, { testFramework: "jasmine" });
+        this.app.run({}, function () { done(); });
+      }.bind(this));
+    });
+
+    it("create expected files", function () {
+      assert.file([
+        "test/jasmine/specs/example.spec.js",
+        "test/jasmine/specs/boilerplate/router.spec.js"
+      ]);
     });
   });
 });
