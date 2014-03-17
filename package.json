@@ -25,7 +25,7 @@
   "dependencies": {
     "yeoman-generator": "~0.16.0",
     "lodash": "~2.4.1",
-    "backbone-boilerplate": "backbone-boilerplate/backbone-boilerplate#59c10b1360faf7dd898c7e976317fdf45a1c1b11",
+    "backbone-boilerplate": "~1.0.1",
     "async": "~0.2.9",
     "js-beautify": "~1.4.0",
     "ast-query": "~0.1.0"
