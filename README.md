@@ -13,7 +13,7 @@ help you being more productive and automize repetitive scaffolding tasks.
 ## Installation ##
 
 ```bash
-npm install -gq generator-bbb
+npm install -g generator-bbb@latest
 ```
 
 Note that the generator can also be installed locally if you want to keep
