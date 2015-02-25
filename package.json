@@ -30,11 +30,6 @@
     "js-beautify": "~1.4.0",
     "ast-query": "0.1.0-pre.2"
   },
-  "peerDependencies": {
-    "grunt-cli": "*",
-    "bower": "*",
-    "yo": "*"
-  },
   "engines": {
     "node": ">=0.8.0",
     "npm": ">=1.2.10"
